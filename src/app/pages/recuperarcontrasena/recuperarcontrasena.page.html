@@ -1,0 +1,64 @@
+<ion-content class="login-content">
+  <div class="login-container">
+    <app-comp1></app-comp1>
+
+
+    <ion-card>
+
+      <ion-item class="custom-item-head">
+
+        <ion-buttons slot="start">
+          <ion-button fill="clear" [routerLink]="'/iniciosesion'" class="back-button">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <p>Recuperar contraseña</p>
+
+      </ion-item>
+
+
+      <ion-item class="centered-item">
+
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+        <ion-input [(ngModel)]="correo" placeholder="Correo" color="light" clear-input></ion-input>
+      </ion-item>
+
+
+      <ion-item class="centered-item">
+        <ion-icon name="shield" slot="start"></ion-icon>
+        <ion-select [(ngModel)]="selectedSecurityQuestion" label="Pregunta de seguridad" label-placement="floating"
+          placeholder="Selecciona una Pregunta">
+          <ion-select-option value="apple">¿Juguete a los 5 años?</ion-select-option>
+          <ion-select-option value="banana">¿Programa favorito?</ion-select-option>
+          <ion-select-option value="orange">¿Bebida favorita?</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item class="centered-item">
+        <ion-icon name="shield-checkmark" slot="start"></ion-icon>
+        <ion-input [(ngModel)]="respuesta" placeholder="Escriba aqui su respuesta" color="light"
+          clear-input></ion-input>
+      </ion-item>
+
+    </ion-card>
+    <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+      {{ mensaje }}
+    </div>
+    <div>
+
+      <div class="wrapper">
+
+        <div class="ion-activatable ripple-parent custom-parent" (click)="Recuperar()">
+          Recuperar contraseña
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+
+      </div>
+
+
+
+
+
+
+
+      <ion-content>

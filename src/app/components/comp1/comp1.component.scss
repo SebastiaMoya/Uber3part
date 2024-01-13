@@ -1,0 +1,11 @@
+.logoCont {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+
+    .logo {
+      max-width: 20%;
+      margin: 5px auto;
+    }
+  }

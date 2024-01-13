@@ -10,7 +10,31 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },  {
+    path: 'iniciosesion',
+    loadChildren: () => import('./pages/iniciosesion/iniciosesion.module').then( m => m.IniciosesionPageModule)
   },
+  {
+    path: 'registrouser',
+    loadChildren: () => import('./pages/registrouser/registrouser.module').then( m => m.RegistrouserPageModule)
+  },
+  {
+    path: 'perfil',
+    loadChildren: () => import('./pages/perfil/perfil.module').then( m => m.PerfilPageModule)
+  },
+  {
+    path: 'buscarviaje',
+    loadChildren: () => import('./pages/buscarviaje/buscarviaje.module').then( m => m.BuscarviajePageModule)
+  },
+  {
+    path: 'recuperarcontrasena',
+    loadChildren: () => import('./pages/recuperarcontrasena/recuperarcontrasena.module').then( m => m.RecuperarcontrasenaPageModule)
+  },
+  {
+    path: 'modificarperfil',
+    loadChildren: () => import('./pages/modificarperfil/modificarperfil.module').then( m => m.ModificarperfilPageModule)
+  },
+
 ];
 
 @NgModule({

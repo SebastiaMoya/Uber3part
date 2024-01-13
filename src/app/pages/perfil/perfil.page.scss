@@ -1,0 +1,159 @@
+.login-content {
+    --ion-background-color: #CC7D76; // Establecer el color de fondo en Ionic
+
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        ion-card-content.centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%; // Ajusta la altura según sea necesario
+
+            ion-item.centered-item {
+                text-align: center; // Alinea el texto al centro
+
+                ion-row {
+                    align-items: center;
+                    justify-content: center;
+
+                    p {
+                        color: #ffe3e3;
+                    }
+
+
+                    .icon-col {
+                        text-align: center;
+
+                    }
+
+                    .edit-icon {
+                        color: #332120; // Color azul para el ícono de editar (puedes ajustar según tu preferencia)
+                        cursor: pointer;
+                      }
+                }
+            }
+        }
+
+
+        ion-card {
+            width: 90%;
+
+            ion-card-title.centered-title {
+               margin-right: 24%;
+              }
+              
+              .back-button{
+                color: #ffe3e3;
+                font-size: 2em; // Ajusta el tamaño del ícono según sea necesario
+
+              }
+
+            ion-card-content {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%; // Ajusta la altura según sea necesario
+
+                ion-item.centered-item {
+                    text-align: center; // Alinea el texto al centro
+                }
+
+                ion-item.centered-item {
+                    text-align: center; // Alinea el texto al centro
+
+                    ion-icon {
+                        margin-bottom: 2px; // Espacio entre el ícono y el texto
+                        color: #ffe3e3;
+                        font-size: 2em; // Ajusta el tamaño del ícono según sea necesario
+
+                    }
+                }
+
+
+            }
+
+            ion-card-header {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                ion-toolbar {
+
+                    ion-card-title {
+                        text-align: center;
+                        text-decoration: underline; // Subraya el enlace
+                    }
+                }
+
+
+
+            }
+        }
+
+        .centered-item {
+            --ion-item-background: #CC7D76; // Color de fondo del item
+            --ion-placeholder-color: #ffaaa3; // Color del placeholder
+
+
+            ion-label {
+                color: #ffaaa3; // Color del label
+            }
+
+
+        }
+
+
+        .wrapper {
+            display: flex;
+            flex-wrap: wrap;
+
+            justify-content: space-between;
+            text-align: center;
+            margin-bottom: 10px;
+            margin-top: 10px;
+
+
+            height: 100%;
+            width: 90%;
+
+            margin: 0 auto;
+        }
+
+        b {
+            width: 100%;
+        }
+
+        .ripple-parent {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 10px;
+            margin-top: 10px;
+
+            position: relative;
+            overflow: hidden;
+
+            border: 1px solid #332120;
+
+            user-select: none;
+
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+        }
+
+        .custom-parent {
+            color: #332120;
+        }
+
+
+    }
+}

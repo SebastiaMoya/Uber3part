@@ -1,0 +1,51 @@
+<ion-content class="login-content">
+  <div class="login-container">
+      <app-comp1></app-comp1>
+
+    <ion-card>
+
+
+      <ion-card-header>
+        <ion-card-title color="light">Iniciar sesión</ion-card-title>
+      </ion-card-header>
+
+      <ion-item class="centered-item">
+        <ion-icon name="mail" slot="start"></ion-icon>
+        <ion-input [(ngModel)]="correo" placeholder="Correo" color="light" clear-input></ion-input>
+      </ion-item>
+
+      <ion-item class="centered-item">
+        <ion-icon name="lock-closed" slot="start"></ion-icon>
+        <ion-input [(ngModel)]="clave" type="password" placeholder="Contraseña" color="light" clear-input></ion-input>
+      </ion-item>
+
+
+
+    </ion-card>
+
+    <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+      {{ mensaje }}
+    </div>
+
+    <ion-text class="register-link">
+      ¿No tienes cuenta? <a href="/registrouser">Regístrate</a>
+    </ion-text>
+    <!-- aqui va el link a recuperar contraseña: -->
+    <ion-text class="register-link">
+      ¿Olvidaste tu contraseña? <a href="/contrasena">Recuperar contraseña</a>
+    </ion-text>
+
+
+    <div class="wrapper">
+
+      <div class="ion-activatable ripple-parent custom-parent" (click)="iniciarSesion()">
+        Iniciar sesión
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Otros elementos de inicio de sesión, como botones, etc. -->
+</ion-content>

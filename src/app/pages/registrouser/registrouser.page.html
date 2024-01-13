@@ -1,0 +1,96 @@
+<ion-content class="login-content">
+
+  <div class="login-container">
+    <app-comp1></app-comp1>
+
+
+    <ion-card>
+
+      <ion-item class="custom-item-head">
+
+        <ion-buttons slot="start">
+          <ion-button fill="clear" [routerLink]="'/iniciosesion'" class="back-button">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <p>Crear usuario</p>
+
+      </ion-item>
+
+      <ion-card-content>
+        <ion-item class="centered-item">
+          <ion-icon name="person" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="nombre" placeholder="Nombre" color="light" clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon slot="start"></ion-icon>
+          <ion-input [(ngModel)]="apellido" placeholder="Apellido" color="light" clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="correo" placeholder="Correo" color="light" clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="lock-closed" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="contrasena" type="password" placeholder="Contraseña" color="light"
+            clear-input></ion-input>
+        </ion-item>
+        <ion-item class="centered-item">
+          <ion-icon slot="start"></ion-icon>
+          <ion-input [(ngModel)]="con_contrasena" type="password" placeholder="Repetir Contraseña" color="light"
+            clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="shield" slot="start"></ion-icon>
+          <ion-select [(ngModel)]="selectedRole" label="¿Usted quiere ser?" label-placement="floating"
+            placeholder="Podra cambiar su rol despues">
+            <ion-select-option value="1">Pasajero</ion-select-option>
+            <ion-select-option value="2">Conductor</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="shield" slot="start"></ion-icon>
+          <ion-select [(ngModel)]="fk_idpregunta" label="Pregunta de seguridad" label-placement="floating"
+            placeholder="Selecciona una Pregunta">
+            <ion-select-option value="1">¿Bebida favorita?</ion-select-option>
+            <ion-select-option value="2">¿Nombre de tu mascota?</ion-select-option>
+            <ion-select-option value="3">¿Marca de celular?</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+
+        <ion-item class="centered-item">
+          <ion-icon name="shield-checkmark" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="respuesta" placeholder="Escriba aqui su respuesta" color="light"
+            clear-input></ion-input>
+        </ion-item>
+      </ion-card-content>
+
+    </ion-card>
+
+    <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+      {{ mensaje }}
+    </div>
+
+    <div class="wrapper">
+
+      <div (click)="registrarUsuario()" class="ion-activatable ripple-parent custom-parent">
+        Registrarse
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+  <!-- Otros elementos de inicio de sesión, como botones, etc. -->
+</ion-content>
