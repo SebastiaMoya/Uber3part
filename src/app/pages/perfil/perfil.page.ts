@@ -118,17 +118,17 @@ export class PerfilPage implements OnInit {
     await alert.present();
   }
 
-//-------------------------------------------
+  //-------------------------------------------
 
   cerrarSesion() {
     // Aquí deberías implementar la lógica para cerrar sesión
     // Por ejemplo, limpiar el estado de la sesión y redirigir al inicio de sesión
     this.router.navigate(['/iniciosesion']);
   }
-  
+
   IrModificar() {
     this.router.navigate(['/modificarperfil']);
-   }
+  }
 
   ngOnInit() {
     this.activeRouter.queryParams.subscribe(param => {

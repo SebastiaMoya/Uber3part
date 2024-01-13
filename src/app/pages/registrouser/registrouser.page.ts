@@ -70,23 +70,23 @@ export class RegistrouserPage implements OnInit {
     }
 
     // Llamar a la función de inserción en la base de datos
-//    this.bd.insertarUsuario(
-//      this.nombre,
-  //    this.correo,
-    //  this.contrasena,
-//      this.respuesta,
- //     +this.selectedRole,
-//      +this.fk_idpregunta,
- //     /* Otros parámetros que debas pasar según la estructura de tu base de datos */
-  //  ).then(() => {
-  //    // Éxito en la inserción, mostrar el mensaje de registro exitoso
-  //    this.MsjRegistro();
-  //    this.router.navigate(['/iniciosesion']);
-  //  }).catch(error => {
-  //    // Error en la inserción, mostrar mensaje de error
-   //   console.error('Error en la inserción de usuario:', error);
-   //   // Puedes agregar lógica adicional para manejar el error si es necesario
-   // });
+    this.bd.insertarUsuario(
+      this.nombre,
+      this.correo,
+      this.contrasena,
+      this.respuesta,
+      +this.selectedRole,
+      +this.fk_idpregunta,
+      //* Otros parámetros que debas pasar según la estructura de tu base de datos */
+    ).then(() => {
+      // Éxito en la inserción, mostrar el mensaje de registro exitoso
+      this.MsjRegistro();
+      this.router.navigate(['/iniciosesion']);
+    }).catch(error => {
+      // Error en la inserción, mostrar mensaje de error
+      console.error('Error en la inserción de usuario:', error);
+      // Puedes agregar lógica adicional para manejar el error si es necesario
+    });
   }
 
 
