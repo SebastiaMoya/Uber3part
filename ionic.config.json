@@ -1,0 +1,7 @@
+{
+  "name": "Uber3part",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
