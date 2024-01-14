@@ -17,7 +17,7 @@ export class RegistrouserPage implements OnInit {
   con_contrasena: string = '';
   fk_idpregunta: string = ''; // Aquí almacenaremos el ID de la pregunta seleccionada
   respuesta: string = '';
-  selectedRole: number = 0; // Variable para almacenar el rol seleccionado por el usuario
+  fk_idrol: number = 0; // Variable para almacenar el rol seleccionado por el usuario
 
   mensajes: string[] = [];
 
@@ -44,7 +44,7 @@ export class RegistrouserPage implements OnInit {
     } else if (!this.contrasena) {
       this.mensajes.push('Campo \'Contraseña\' es obligatorio');
       return;
-    } else if (!this.selectedRole) {
+    } else if (!this.fk_idrol) {
       this.mensajes.push('Debes seleccionar un rol');
       return;
     } else if (!this.fk_idpregunta) {
@@ -75,7 +75,7 @@ export class RegistrouserPage implements OnInit {
       this.correo,
       this.contrasena,
       this.respuesta,
-      +this.selectedRole,
+      +this.fk_idrol,
       +this.fk_idpregunta,
       //* Otros parámetros que debas pasar según la estructura de tu base de datos */
     ).then(() => {
@@ -84,11 +84,29 @@ export class RegistrouserPage implements OnInit {
       this.router.navigate(['/iniciosesion']);
     }).catch(error => {
       // Error en la inserción, mostrar mensaje de error
+      this.MsjFallo();
       console.error('Error en la inserción de usuario:', error);
       // Puedes agregar lógica adicional para manejar el error si es necesario
     });
   }
 
+  async MsjFallo() {
+    const alert = await this.alertController.create({
+      header: 'Error',
+      message: 'Registro fallido',
+      buttons: [
+        {
+          text: 'OK',
+          role: 'ok',
+          cssClass: 'primary',
+          handler: (blah) => {
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
 
 
   async MsjRegistro() {

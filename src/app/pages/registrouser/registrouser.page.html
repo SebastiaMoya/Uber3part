@@ -25,11 +25,6 @@
         </ion-item>
 
         <ion-item class="centered-item">
-          <ion-icon slot="start"></ion-icon>
-          <ion-input [(ngModel)]="apellido" placeholder="Apellido" color="light" clear-input></ion-input>
-        </ion-item>
-
-        <ion-item class="centered-item">
           <ion-icon name="mail-outline" slot="start"></ion-icon>
           <ion-input [(ngModel)]="correo" placeholder="Correo" color="light" clear-input></ion-input>
         </ion-item>
@@ -46,8 +41,8 @@
         </ion-item>
 
         <ion-item class="centered-item">
-          <ion-icon name="shield" slot="start"></ion-icon>
-          <ion-select [(ngModel)]="selectedRole" label="¿Usted quiere ser?" label-placement="floating"
+          <ion-icon name="help" slot="start"></ion-icon>
+          <ion-select [(ngModel)]="fk_idrol" label="¿Usted quiere ser?" label-placement="floating"
             placeholder="Podra cambiar su rol despues">
             <ion-select-option value="1">Pasajero</ion-select-option>
             <ion-select-option value="2">Conductor</ion-select-option>

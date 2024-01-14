@@ -49,6 +49,7 @@ export class BasededatosService {
 
 
   constructor(private alertController: AlertController, private plataform: Platform, private sqlite: SQLite) {
+    this.crearBD();
   }
 
   //funciones que retornen los observables creados
@@ -101,23 +102,26 @@ export class BasededatosService {
 
 
   async crearTablas() {
-    //this.presentAlert("0");
+    this.presentAlert("0");
     try {
       //ejecutar creacion de tablas
       await this.conexionBD.executeSql(this.tablaRol, []);
-      //this.presentAlert("1");
+      this.presentAlert("1");
       await this.conexionBD.executeSql(this.tablaUsuario, []);
-      //this.presentAlert("2");
+      this.presentAlert("2");
       //ejecuto los insert en las tablas
       await this.conexionBD.executeSql(this.insertRol1, []);
-      //this.presentAlert("3");
+      this.presentAlert("3");
       await this.conexionBD.executeSql(this.insertRol2, []);
-      //this.presentAlert("4");
+      this.presentAlert("4");
       //this.buscarUsuarios();
-      //this.presentAlert("5");
+      await this.conexionBD.executeSql(this.insertUsuario1,[]);
+      this.presentAlert("5");
+      await this.conexionBD.executeSql(this.insertUsuario1,[]);
+      this.presentAlert("6");
       //actualizo el observable de la base de datos
       this.isDBReady.next(true);
-      //this.presentAlert("6");
+      this.presentAlert("7");
     }
     catch (e) {
       this.presentAlert("Error en tablas: " + JSON.stringify(e));
