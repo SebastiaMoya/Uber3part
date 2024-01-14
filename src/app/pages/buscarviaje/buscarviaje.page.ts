@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { Geolocation } from '@capacitor/geolocation';
 
 @Component({
   selector: 'app-buscarviaje',
@@ -9,6 +10,12 @@ import { AlertController } from '@ionic/angular';
 export class BuscarviajePage implements OnInit {
 
   constructor(private alertController: AlertController) { }
+
+  printCurrentPosition = async () => {
+    const coordinates = await Geolocation.getCurrentPosition();
+  
+    console.log('Current position:', coordinates);
+  };
 
   ngOnInit() {
   }
