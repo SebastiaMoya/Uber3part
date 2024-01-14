@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 @Component({
   selector: 'app-modificarperfil',
@@ -12,8 +13,13 @@ export class ModificarperfilPage implements OnInit {
   claveRecibido: string = '';
   patente: string = 'aa123bb';
 
+  imageSource: any;
+
   constructor(private router: Router,private alertController: AlertController) { }
 
+
+
+  
   cerrarSesion() {
     this.router.navigate(['/perfil']);
   }
@@ -21,6 +27,18 @@ export class ModificarperfilPage implements OnInit {
   ngOnInit() {
 
   }
+  
+  takePicture = async () => {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl
+    });
+  
+    this.imageSource = image.dataUrl; 
+  
+    
+  };
 
   async editarPatente() {
     const alert = await this.alertController.create({

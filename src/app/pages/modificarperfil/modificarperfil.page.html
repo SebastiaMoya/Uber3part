@@ -22,12 +22,32 @@
         </ion-toolbar>
       </ion-card-header>
 
-      <div class="row">
-        <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
-        <div class="ion-activatable ripple-parent custom-parent">Cambiar Foto</div>
-      </div>
+    
+
+
+ 
+
+
+
+  
+
 
       <ion-card-content class="centered-content">
+
+
+        <ion-item class="centered-item">
+          <ion-row>
+            <ion-col size="12">
+              <p> Cambiar Foto  </p>
+            </ion-col>
+            <ion-col size="7">
+              <!-- Agregué un ion-icon para editar -->
+              <ion-button fill="outline" color="dark" (click)="takePicture()">Tomar Foto</ion-button>
+              <img *ngIf="imageSource" src="{{ imageSource }}" alt="https://ionicframework.com/docs/img/demos/card-media.png" width="250px" height="250px">
+            </ion-col>
+          </ion-row>
+        </ion-item>
+    
 
         <ion-item class="centered-item">
           <ion-row>
