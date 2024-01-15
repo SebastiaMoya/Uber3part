@@ -11,6 +11,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 export class PerfilPage implements OnInit {
   mailRecibido: string = '';
   claveRecibido: string = '';
+  rolRecibido: number = 0;
   patente: string = 'aa123bb';
 
   dirPartida: string = '';
@@ -137,7 +138,12 @@ export class PerfilPage implements OnInit {
         //guardamos la info en variables propias
 
         this.mailRecibido = this.router.getCurrentNavigation()?.extras?.state?.['mailEnviado'];
+        this.mostrarMensaje('1');
         this.claveRecibido = this.router.getCurrentNavigation()?.extras?.state?.['claveEnviado'];
+        this.mostrarMensaje('2');
+        this.rolRecibido = this.router.getCurrentNavigation()?.extras?.state?.['rolEnviado'];
+        this.mostrarMensaje('todo bien, id_rol del usuario: ' + this.rolRecibido);
+
       }
     })
   }

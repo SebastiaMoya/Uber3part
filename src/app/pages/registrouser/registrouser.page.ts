@@ -69,6 +69,10 @@ export class RegistrouserPage implements OnInit {
       return;
     }
 
+    // Antes de la llamada a la función de inserción
+    console.log('Valor de fk_idrol:', this.fk_idrol);
+    console.log('Valor de fk_idpregunta:', this.fk_idpregunta);
+
     // Llamar a la función de inserción en la base de datos
     this.bd.insertarUsuario(
       this.nombre,
@@ -78,8 +82,10 @@ export class RegistrouserPage implements OnInit {
       +this.fk_idrol,
       +this.fk_idpregunta,
       //* Otros parámetros que debas pasar según la estructura de tu base de datos */
-    ).then(() => {
+    ).then((idRolInsertado) => {
       // Éxito en la inserción, mostrar el mensaje de registro exitoso
+      // idRolInsertado contendrá el ID del rol insertado
+      console.log('ID del rol insertado:', idRolInsertado);
       this.MsjRegistro();
       this.router.navigate(['/iniciosesion']);
     }).catch(error => {
@@ -112,7 +118,7 @@ export class RegistrouserPage implements OnInit {
   async MsjRegistro() {
     const alert = await this.alertController.create({
       header: 'Te damos la bienvenida',
-      message: 'Usuario creado exitosamente',
+      message: 'Valor de fk_idrol: ' + this.fk_idrol,
       buttons: [
         {
           text: 'OK',

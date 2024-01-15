@@ -5,7 +5,7 @@
 
     <!----Conductor-->
 
-    <ion-card *ngIf="mailRecibido === 'conductor@gmail.com'">
+    <ion-card *ngIf="rolRecibido === 2">
 
       <ion-card-header>
         <ion-toolbar>
@@ -88,7 +88,7 @@
 
     <!----Pasajero-->
 
-    <ion-card *ngIf="mailRecibido != 'conductor@gmail.com'">
+    <ion-card *ngIf="rolRecibido === 1">
 
       <ion-card-header>
         <ion-toolbar>

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { BasededatosService } from 'src/app/services/basededatos.service';
+import { Usuarios } from 'src/app/services/usuarios';
 
 @Component({
   selector: 'app-iniciosesion',
@@ -12,6 +13,11 @@ export class IniciosesionPage implements OnInit {
   mensajes: string[] = [];
   correo: string = '';
   clave: string = '';
+  id_rol: number = 0;
+
+  mailEnviado: string = '';
+  claveEnviado: string = '';
+  rolEnviado: number = 0;
 
   idConductor: number = 1
   mailConductor: string = 'conductor@gmail.com';
@@ -21,10 +27,29 @@ export class IniciosesionPage implements OnInit {
   mailPasajero: string = 'pasajero@gmail.com';
   clavePasajero: string = 'Pasajero_123';
 
-  constructor(private router: Router, private bd: BasededatosService, private alertController: AlertController) { }
+  constructor(private router: Router, private bd: BasededatosService, private alertController: AlertController, private toastController: ToastController) { }
 
   ngOnInit() {
   }
+
+  async mostrarMensaje() {
+    const alert = await this.alertController.create({
+      header: 'Te damos la bienvenida',
+      message: 'Usuario iniciado exitosamente: '+ this.rolEnviado,
+      buttons: [
+        {
+          text: 'OK',
+          role: 'ok',
+          cssClass: 'primary',
+          handler: (blah) => {
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   iniciarSesion() {
     this.mensajes = [];
 
@@ -45,13 +70,19 @@ export class IniciosesionPage implements OnInit {
     this.bd.buscarUsuarios(this.correo, this.clave)
       .then((usuarios) => {
         if (usuarios.length > 0) {
-          // Autenticación exitosa, redirigir a la página de perfil o a donde sea necesario
+          const usuario = usuarios[0];
+
+          // Autenticación exitosa, redirigir a la página de perfil con información adicional
           let navigationExtras: NavigationExtras = {
             state: {
-              mailEnviado: this.correo,
-              claveEnviado: this.clave
+              usuario: {
+                mailEnviado: this.correo,
+                claveEnviado: this.clave,
+                rolEnviado: usuario.id_rol
+              }
             }
-          }
+          };
+          this.mostrarMensaje();
           this.router.navigate(['/perfil'], navigationExtras);
         } else {
           // Credenciales incorrectas
@@ -59,9 +90,11 @@ export class IniciosesionPage implements OnInit {
         }
       })
       .catch(error => {
+        // Captura y muestra más detalles sobre el error
+        console.error('Error en la búsqueda de usuarios:', error);
         console.error('Error en la autenticación:', error);
-        this.mensajes.push('Error en la autenticación. Por favor, inténtalo de nuevo.');
+        this.mensajes.push('Error en la autenticación. Por favor, inténtalo de nuevo.', error);
       });
-  }
 
+  }
 }
