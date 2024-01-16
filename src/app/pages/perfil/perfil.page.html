@@ -5,7 +5,7 @@
 
     <!----Conductor-->
 
-    <ion-card *ngIf="rolRecibido === 2">
+    <ion-card *ngIf="idRolUsuario === 2">
 
       <ion-card-header>
         <ion-toolbar>
@@ -15,7 +15,7 @@
               <ion-icon name="log-out"></ion-icon>
             </ion-button>
             <ion-button fill="clear" (click)="IrModificar()">
-              <ion-icon name="person-outline"></ion-icon>
+              <ion-icon name="settings"></ion-icon>
             </ion-button>
           </ion-buttons>
 
@@ -77,12 +77,12 @@
 
 
       <div class="wrapper">
-        <div id="present-alert" class="ion-activatable ripple-parent custom-parent" (click)="publicarViaje()">
+        <div id="present-alert" class="ion-activatable ripple-parent custom-parent" [routerLink]="'/publicarviaje'">
           Publicar Viaje
           <ion-ripple-effect></ion-ripple-effect>
         </div>
       </div>
-      
+
 
     </ion-card>
 
@@ -153,7 +153,99 @@
       </div>
 
     </ion-card>
-  </div>
 
-  <!-- Otros elementos de inicio de sesión, como botones, etc. -->
+    <!--------------------------------------->
+    <!-----------Si nada funciona------------>
+    <!--------------------------------------->
+    <ion-card *ngIf="idRolUsuario === 0">
+
+      <ion-card-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <!-- Cambié el slot de "end" a "start" y el icono a log-out -->
+            <ion-button fill="clear" (click)="cerrarSesion()" class="back-button">
+              <ion-icon name="log-out"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" (click)="IrModificar()">
+              <ion-icon name="settings"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+
+          <!-- Añadí una clase para centrar el texto -->
+          <ion-card-title class="centered-title" color="light">Perfil</ion-card-title>
+        </ion-toolbar>
+      </ion-card-header>
+
+
+
+      <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
+
+      <ion-card-content class="centered-content">
+        <ion-item class="centered-item">
+          <ion-row>
+            <ion-col size="12" class="icon-col">
+
+              <ion-icon name="help"></ion-icon>
+
+            </ion-col>
+            <ion-col size="12">
+              <p>Usuario sin rol</p>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-row>
+            <ion-col size="12">
+              <p> {{ patente | uppercase }} </p>
+            </ion-col>
+            <ion-col size="7">
+              <!-- Agregué un ion-icon para editar -->
+              <ion-icon name="create" (click)="editarPatente()" class="edit-icon"></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-row>
+            <ion-col size="12" class="icon-col">
+              <ion-icon name="person"></ion-icon>
+            </ion-col>
+            <ion-col size="12">
+              Maria Jose
+            </ion-col>
+          </ion-row>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-row>
+            <ion-col size="12" class="icon-col">
+              <ion-icon name="mail"></ion-icon>
+            </ion-col>
+            <ion-col size="12">
+              {{ mailRecibido }}
+            </ion-col>
+          </ion-row>
+        </ion-item>
+      </ion-card-content>
+
+      <div class="wrapper">
+
+        <div [routerLink]="'/buscarviaje'" class="ion-activatable ripple-parent custom-parent">
+          Buscar Viaje
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+
+      </div>
+
+
+      <div class="wrapper">
+        <div id="present-alert" class="ion-activatable ripple-parent custom-parent" [routerLink]="'/publicarviaje'">
+          Publicar Viaje
+          <ion-ripple-effect></ion-ripple-effect>
+        </div>
+      </div>
+
+    </ion-card>
+  </div>
 </ion-content>

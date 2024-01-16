@@ -1,0 +1,93 @@
+.login-content {
+    --ion-background-color: #CC7D76; // Establecer el color de fondo en Ionic
+
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 110vh; // Ajusta la altura según sea necesario
+
+        ion-card-header {
+            background-color: #332120;
+
+
+
+            ion-card-title {
+
+                color: #ffedeb; // Color del placeholder
+
+
+            }
+        }
+
+        .centered-item {
+            --ion-item-background: #ffaaa3; // Color de fondo del item
+            color: #332120; // Color del placeholder
+
+            ion-label {
+                color: #ffaaa3; // Color del label
+            }
+
+            ion-input {
+                --ion-input-background: #ffaaa3; // Color de fondo del input
+                --ion-input-color: #FF6E61; // Color del texto del input
+            }
+
+
+        }
+
+        .register-link {
+            color: #fff; // Color del texto del enlace
+            margin-top: 16px; // Ajusta el margen según sea necesario
+
+            a {
+                color: #332120; // Color del enlace
+                text-decoration: underline; // Subraya el enlace
+            }
+        }
+
+
+
+        .wrapper {
+            display: flex;
+            flex-wrap: wrap;
+
+            align-items: center;
+            justify-content: space-between;
+            text-align: center;
+
+            height: 170px;
+            width: 400px;
+
+            margin: 0 auto;
+        }
+
+        b {
+            width: 100%;
+        }
+
+        .ripple-parent {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            position: relative;
+            overflow: hidden;
+
+            border: 1px solid #332120;
+
+            user-select: none;
+
+            width: 100%;
+            height: 50px;
+            border-radius: 8px;
+        }
+
+        .custom-parent {
+            color: #332120;
+        }
+
+
+    }
+}

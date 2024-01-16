@@ -1,6 +1,6 @@
 <ion-content class="login-content">
   <div class="login-container">
-      <app-comp1></app-comp1>
+    <app-comp1></app-comp1>
 
     <ion-card>
 
@@ -32,7 +32,7 @@
     </ion-text>
     <!-- aqui va el link a recuperar contraseña: -->
     <ion-text class="register-link">
-      ¿Olvidaste tu contraseña? <a href="/contrasena">Recuperar contraseña</a>
+      ¿Olvidaste tu contraseña? <a href="/recuperarcontrasena">Recuperar contraseña</a>
     </ion-text>
 
 
@@ -45,7 +45,31 @@
 
     </div>
 
+
   </div>
+
+  <!-- Otros elementos en tu página de inicio -->
+  <ion-button (click)="limpiarTablaUsuarios()">Limpiar Tabla de Usuarios</ion-button>
+  <!-- Otros elementos en tu página de inicio -->
+  <ion-button (click)="mostrarListaUsuarios()">Mostrar Lista de Usuarios</ion-button>
+
+  <!-- Lista de usuarios -->
+  <ion-list *ngIf="usuarios.length > 0">
+    <ion-item *ngFor="let usuario of usuarios">
+      <ion-label>
+        <h2>{{ usuario.nombreuser }}</h2>
+        <p>{{ usuario.correo }}</p>
+        <p>ID: {{ usuario.id_usuario }}</p>
+        <p>Clave: {{ usuario.clave }}</p>
+        <p>Respuesta: {{ usuario.respuesta }}</p>
+        <p>Rol ID: {{ usuario.fk_idrol }}</p>
+        <p>Pregunta ID: {{ usuario.fk_idpregunta }}</p>
+        <!-- Muestra solo las columnas de ID que necesitas -->
+        <!-- Puedes mostrar más información según tus necesidades -->
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
 
   <!-- Otros elementos de inicio de sesión, como botones, etc. -->
 </ion-content>

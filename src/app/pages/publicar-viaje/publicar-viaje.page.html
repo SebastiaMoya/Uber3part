@@ -1,0 +1,80 @@
+<ion-content class="login-content">
+
+  <div class="login-container">
+    <app-comp1></app-comp1>
+
+
+    <ion-card>
+
+      <ion-item class="custom-item-head">
+
+        <ion-buttons slot="start">
+          <ion-button fill="clear" [routerLink]="'/perfil'" class="back-button">
+            <ion-icon name="arrow-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <p>Publicar viaje</p>
+
+      </ion-item>
+
+      <ion-card-content>
+
+        <ion-item class="centered-item">
+          <ion-icon name="car" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="fk_patente" type="text" placeholder="Patente del vehiculo" color="light"
+            clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="time" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="horasalida" placeholder="Hora de salida" color="light" clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="car" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="asientos_disponibles" type="number" placeholder="Asientos disponibles" color="light"
+            clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="location" slot="start"></ion-icon>
+          <ion-select [(ngModel)]="fk_comuna" label="Comuna" label-placement="floating"
+            placeholder="Selecciona una comuna">
+            <ion-select-option *ngFor="let comuna of comunas" [value]="comuna.id_comuna">{{ comuna.nombre_comuna
+              }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="business" slot="start"></ion-icon>
+          <ion-select [(ngModel)]="fk_sede" label="Sede" label-placement="floating" placeholder="Selecciona una sede">
+            <ion-select-option *ngFor="let sede of sedes" [value]="sede.id_sede">{{ sede.nombre_sede
+              }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+
+
+    </ion-card>
+
+    <div *ngFor="let mensaje of mensajes" class="mensaje-error">
+      {{ mensaje }}
+    </div>
+
+    <div class="wrapper">
+
+      <div (click)="registrarViaje()" class="ion-activatable ripple-parent custom-parent">
+        Publicar Viaje
+        <ion-ripple-effect></ion-ripple-effect>
+      </div>
+
+    </div>
+
+
+
+
+  </div>
+
+  <!-- Otros elementos de inicio de sesión, como botones, etc. -->
+</ion-content>

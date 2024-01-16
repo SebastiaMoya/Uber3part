@@ -18,7 +18,7 @@ export class RegistrouserPage implements OnInit {
   fk_idpregunta: string = ''; // Aquí almacenaremos el ID de la pregunta seleccionada
   respuesta: string = '';
   fk_idrol: number = 0; // Variable para almacenar el rol seleccionado por el usuario
-
+  idRolUsuario: number = 0;
   mensajes: string[] = [];
 
   constructor(private alertController: AlertController, private router: Router, private bd: BasededatosService) { }
@@ -73,7 +73,7 @@ export class RegistrouserPage implements OnInit {
     console.log('Valor de fk_idrol:', this.fk_idrol);
     console.log('Valor de fk_idpregunta:', this.fk_idpregunta);
 
-    // Llamar a la función de inserción en la base de datos
+    // Verificar si el correo ya existe antes de continuar
     this.bd.insertarUsuario(
       this.nombre,
       this.correo,
@@ -81,12 +81,13 @@ export class RegistrouserPage implements OnInit {
       this.respuesta,
       +this.fk_idrol,
       +this.fk_idpregunta,
-      //* Otros parámetros que debas pasar según la estructura de tu base de datos */
     ).then((idRolInsertado) => {
       // Éxito en la inserción, mostrar el mensaje de registro exitoso
       // idRolInsertado contendrá el ID del rol insertado
       console.log('ID del rol insertado:', idRolInsertado);
       this.MsjRegistro();
+      // Guarda el ID del rol insertado en una variable para usarlo más adelante
+      this.idRolUsuario = idRolInsertado;
       this.router.navigate(['/iniciosesion']);
     }).catch(error => {
       // Error en la inserción, mostrar mensaje de error
@@ -94,7 +95,9 @@ export class RegistrouserPage implements OnInit {
       console.error('Error en la inserción de usuario:', error);
       // Puedes agregar lógica adicional para manejar el error si es necesario
     });
+
   }
+
 
   async MsjFallo() {
     const alert = await this.alertController.create({

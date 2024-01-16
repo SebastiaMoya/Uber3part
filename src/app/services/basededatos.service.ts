@@ -3,6 +3,9 @@ import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { Usuarios } from './usuarios';
+import { Comunas } from './comunas';
+import { Sedes } from './sedes';
+import { Viaje } from './viaje';
 
 @Injectable({
   providedIn: 'root'
@@ -38,14 +41,15 @@ export class BasededatosService {
   insertpregunta2: string = "INSERT or IGNORE INTO pregunta(id_pregunta,pregunta) VALUES (2,'¿Nombre de tu mascota?');";
   insertpregunta3: string = "INSERT or IGNORE INTO pregunta(id_pregunta,pregunta) VALUES (3,'¿Marca de celular?');";
 
-  insertsede1: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede)) VALUES (1,'La florida');";
-  insertsede2: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede)) VALUES (2,'Quilicura');";
+  insertsede1: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede) VALUES (1,'Plaza norte');";
+  insertsede2: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede) VALUES (2,'Alameda');";
 
   insertcomuna1: string = "INSERT or IGNORE INTO comuna(id_comuna,nombre_comuna) VALUES (1,'La florida');";
   insertcomuna2: string = "INSERT or IGNORE INTO comuna(id_comuna,nombre_comuna) VALUES (2,'Quilicura');";
 
   insertUsuario1: string = "INSERT or IGNORE INTO usuario(id_usuario,nombreuser,correo,clave,respuesta,fk_idrol,fk_idpregunta) VALUES (1,'Tulio Tribiño','31@gmail.com','31_Minutos', 'plata', 1, 2);";
   insertUsuario2: string = "INSERT or IGNORE INTO usuario(id_usuario,nombreuser,correo,clave,respuesta,fk_idrol,fk_idpregunta) VALUES (2,'Bodoque','Bodoque@gmail.com','31_Minutos', 'Vino', 2, 1);";
+
 
   //variables para los observables de las consultas a las tablas
   listaUser = new BehaviorSubject([]);
@@ -93,8 +97,6 @@ export class BasededatosService {
   }
 
 
-
-
   async presentAlert(msj: string) {
     const alert = await this.alertController.create({
       header: 'Mensaje Importante',
@@ -133,8 +135,17 @@ export class BasededatosService {
       await this.conexionBD.executeSql(this.insertRol2, []);
       //this.presentAlert("10");
       await this.conexionBD.executeSql(this.insertpregunta1, []);
-      //this.presentAlert("9");
+      //this.presentAlert("11");
       await this.conexionBD.executeSql(this.insertpregunta2, []);
+      //this.presentAlert("12");
+      await this.conexionBD.executeSql(this.insertcomuna1, []);
+      //this.presentAlert("13");
+      await this.conexionBD.executeSql(this.insertcomuna2, []);
+      //this.presentAlert("14");
+      await this.conexionBD.executeSql(this.insertsede1, []);
+      //this.presentAlert("15");
+      await this.conexionBD.executeSql(this.insertsede2, []);
+      //this.presentAlert("16");
       //this.presentAlert("10");
       //this.buscarUsuarios();
       await this.conexionBD.executeSql(this.insertUsuario1, []);
@@ -143,7 +154,7 @@ export class BasededatosService {
       //this.presentAlert("12");
       //actualizo el observable de la base de datos
       this.isDBReady.next(true);
-      this.presentAlert("tablas e inserts completados exitosamente");
+      //this.presentAlert("Proceso completado");
     }
     catch (e) {
       this.presentAlert("Error en tablas: " + JSON.stringify(e));
@@ -151,15 +162,47 @@ export class BasededatosService {
 
   }
 
-  insertarUsuario(nombre: string, correo: string, clave: string, respuesta: string, fk_idrol: number, fk_idpregunta: number): Promise<number> {
-    return this.conexionBD.executeSql('INSERT INTO usuario(nombreuser, correo, clave, respuesta, fk_idrol, fk_idpregunta) VALUES (?, ?, ?, ?, ?, ?)', [nombre, correo, clave, respuesta, fk_idrol, fk_idpregunta])
-      .then(res => res.insertId)  // Devuelve el ID del último registro insertado
-      .catch(e => {
-        this.presentAlert("Error en insert usuario: " + JSON.stringify(e));
-        throw e;
+  verificarCorreoExistente(correo: string): Promise<boolean> {
+    return this.conexionBD.executeSql('SELECT COUNT(*) AS cantidad FROM usuario WHERE correo = ?', [correo])
+      .then(res => {
+        // Si la cantidad es mayor que 0, significa que el correo ya existe
+        return res.rows.item(0).cantidad > 0;
+      })
+      .catch(error => {
+        console.error('Error al verificar correo existente:', error);
+        throw error; // Propaga el error para que pueda ser manejado en el componente
       });
   }
-  
+
+
+
+  insertarUsuario(nombre: string, correo: string, clave: string, respuesta: string, fk_idrol: number, fk_idpregunta: number): Promise<number> {
+    return this.conexionBD.executeSql('INSERT INTO usuario(nombreuser, correo, clave, respuesta, fk_idrol, fk_idpregunta) VALUES (?, ?, ?, ?, ?, ?)',
+      [nombre, correo, clave, respuesta, fk_idrol, fk_idpregunta]).then(res => {
+        // Obtener el ID del último rol insertado
+        return res.insertId;
+      }).catch(e => {
+        this.presentAlert("Error en insert usuario: " + JSON.stringify(e));
+        throw e; // Re-lanzar el error para que pueda ser manejado en la llamada.
+      });
+  }
+
+
+  buscarUsuarioPorCorreo(correo: string): Promise<{ id_usuario: number, fk_idrol: number }> {
+    return this.conexionBD.executeSql('SELECT id_usuario, fk_idrol FROM usuario WHERE correo = ?', [correo])
+      .then(res => {
+        if (res.rows.length > 0) {
+          const usuario = res.rows.item(0);
+          return { id_usuario: usuario.id_usuario, fk_idrol: usuario.fk_idrol };
+        } else {
+          throw new Error("Usuario no encontrado");
+        }
+      })
+      .catch(e => {
+        console.error("Error al buscar usuario:", e);
+        throw new Error("Error al buscar usuario: " + JSON.stringify(e));
+      });
+  }
 
 
 
@@ -192,5 +235,209 @@ export class BasededatosService {
   }
 
 
+  limpiarTablaUsuarios() {
+    return this.conexionBD.executeSql('DELETE FROM usuario', [])
+      .then(() => {
+        console.log('Registros de la tabla de usuarios eliminados exitosamente');
+      })
+      .catch(error => {
+        console.error('Error al limpiar la tabla de usuarios:', error);
+        throw error; // Propaga el error para que pueda ser manejado en la página de inicio
+      });
+  }
+
+  // En basededatos.service.ts
+
+  getAllUsuarios(): Promise<Usuarios[]> {
+    const query = `
+    SELECT usuario.*, rol.nombre_rol, pregunta.pregunta
+    FROM usuario
+    INNER JOIN rol ON usuario.fk_idrol = rol.id_rol
+    INNER JOIN pregunta ON usuario.fk_idpregunta = pregunta.id_pregunta
+  `;
+
+    return this.conexionBD.executeSql(query, []).then(res => {
+      let usuarios: Usuarios[] = [];
+
+      if (res.rows.length > 0) {
+        for (let i = 0; i < res.rows.length; i++) {
+          usuarios.push({
+            id_usuario: res.rows.item(i).id_usuario,
+            nombreuser: res.rows.item(i).nombreuser,
+            correo: res.rows.item(i).correo,
+            clave: res.rows.item(i).clave,
+            respuesta: res.rows.item(i).respuesta,
+            fk_idrol: res.rows.item(i).fk_idrol,
+            id_rol: res.rows.item(i).id_rol,
+            fk_idpregunta: res.rows.item(i).fk_idpregunta,
+          });
+        }
+      }
+
+      return usuarios;
+    }).catch(e => {
+      console.error("Error al obtener usuarios:", e);
+      throw new Error("Error al obtener usuarios: " + JSON.stringify(e));
+    });
+  }
+
+  //----------------------------------------------------------------------
+
+  async obtenerSedes(): Promise<any[]> {
+    return this.sqlite.create({
+      name: 'tu_base_de_datos.db',
+      location: 'default'
+    }).then((db: SQLiteObject) => {
+      return db.executeSql('SELECT * FROM sede', []).then(data => {
+        let sedes = [];
+        if (data.rows.length > 0) {
+          for (let i = 0; i < data.rows.length; i++) {
+            sedes.push(data.rows.item(i));
+          }
+        }
+        return sedes;
+      });
+    });
+  }
+
+  async obtenerComunas(): Promise<any[]> {
+    return this.sqlite.create({
+      name: 'tu_base_de_datos.db',
+      location: 'default'
+    }).then((db: SQLiteObject) => {
+      return db.executeSql('SELECT * FROM comuna', []).then(data => {
+        let comunas = [];
+        if (data.rows.length > 0) {
+          for (let i = 0; i < data.rows.length; i++) {
+            comunas.push(data.rows.item(i));
+          }
+        }
+        return comunas;
+      });
+    });
+  }
+
+  insertarViaje(horasalida: string, asientos_disponibles: number, fk_comuna: number, fk_sede: number, fk_patente: string): Promise<number> {
+    return this.conexionBD.executeSql('INSERT INTO viaje(horasalida, asientos_disponibles, fk_comuna, fk_sede, fk_patente) VALUES (?, ?, ?, ?, ?)',
+      [horasalida, asientos_disponibles, fk_comuna, fk_sede, fk_patente]).then(res => {
+        // Obtener el ID del último viaje insertado
+        return res.insertId;
+      }).catch(e => {
+        this.presentAlert("Error en insert viaje: " + JSON.stringify(e));
+        throw e; // Re-lanzar el error para que pueda ser manejado en la llamada.
+      });
+  }
+
+  getNombreComuna(fkComuna: number): Promise<string> {
+    const query = 'SELECT nombre_comuna FROM comuna WHERE id_comuna = ?';
+    return this.conexionBD.executeSql(query, [fkComuna]).then(res => {
+      if (res.rows.length > 0) {
+        return res.rows.item(0).nombre_comuna;
+      }
+      return ''; // O cualquier valor por defecto que desees
+    }).catch(error => {
+      console.error('Error al obtener nombre de comuna:', error);
+      throw new Error('Error al obtener nombre de comuna: ' + JSON.stringify(error));
+    });
+  }
+
+
+  getAllComunas(): Promise<Comunas[]> {
+    const query = `
+    SELECT *
+    FROM comuna
+  `;
+
+    return this.conexionBD.executeSql(query, []).then(res => {
+      let comunas: Comunas[] = [];
+
+      if (res.rows.length > 0) {
+        for (let i = 0; i < res.rows.length; i++) {
+          comunas.push({
+            id_comuna: res.rows.item(i).id_comuna,
+            nombre_comuna: res.rows.item(i).nombre_comuna,
+            // Otros campos de la tabla comuna si los tienes
+          });
+        }
+      }
+
+      return comunas;
+    }).catch(e => {
+      console.error("Error al obtener comunas:", e);
+      throw new Error("Error al obtener comunas: " + JSON.stringify(e));
+    });
+  }
+
+  getNombreSede(fkSede: number): Promise<string> {
+    const query = 'SELECT nombre_sede FROM sede WHERE id_sede = ?';
+    return this.conexionBD.executeSql(query, [fkSede]).then(res => {
+      if (res.rows.length > 0) {
+        return res.rows.item(0).nombre_sede;
+      }
+      return ''; // O cualquier valor por defecto que desees
+    }).catch(error => {
+      console.error('Error al obtener nombre de sede:', error);
+      throw new Error('Error al obtener nombre de sede: ' + JSON.stringify(error));
+    });
+  }
+
+  getAllSedes(): Promise<Sedes[]> {
+    const query = `
+    SELECT *
+    FROM sede
+  `;
+
+    return this.conexionBD.executeSql(query, []).then(res => {
+      let sedes: Sedes[] = [];
+
+      if (res.rows.length > 0) {
+        for (let i = 0; i < res.rows.length; i++) {
+          sedes.push({
+            id_sede: res.rows.item(i).id_sede,
+            nombre_sede: res.rows.item(i).nombre_sede,
+            // Otros campos de la tabla sede si los tienes
+          });
+        }
+      }
+
+      return sedes;
+    }).catch(e => {
+      console.error("Error al obtener sedes:", e);
+      throw new Error("Error al obtener sedes: " + JSON.stringify(e));
+    });
+  }
+
+  getAllViajes(): Promise<Viaje[]> {
+    const query = `
+      SELECT viaje.*, comuna.nombre_comuna, sede.nombre_sede
+      FROM viaje
+      INNER JOIN comuna ON viaje.fk_comuna = comuna.id_comuna
+      INNER JOIN sede ON viaje.fk_sede = sede.id_sede
+    `;
+
+    return this.conexionBD.executeSql(query, []).then(res => {
+      let viajes: Viaje[] = [];
+
+      if (res.rows.length > 0) {
+        for (let i = 0; i < res.rows.length; i++) {
+          viajes.push({
+            id_viaje: res.rows.item(i).id_viaje,
+            horasalida: res.rows.item(i).horasalida,
+            asientos_disponibles: res.rows.item(i).asientos_disponibles,
+            fk_comuna: res.rows.item(i).fk_comuna,
+            fk_sede: res.rows.item(i).fk_sede,
+            fk_patente: res.rows.item(i).fk_patente,
+            nombre_comuna: res.rows.item(i).nombre_comuna,
+            nombre_sede: res.rows.item(i).nombre_sede,
+          });
+        }
+      }
+
+      return viajes;
+    }).catch(e => {
+      console.error('Error al obtener viajes:', e);
+      throw new Error('Error al obtener viajes: ' + JSON.stringify(e));
+    });
+  }
 
 }

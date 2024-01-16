@@ -13,29 +13,32 @@ export class IniciosesionPage implements OnInit {
   mensajes: string[] = [];
   correo: string = '';
   clave: string = '';
-  id_rol: number = 0;
+  fk_idrol: number = 0;
+
+  usuarios: Usuarios[] = [];
 
   mailEnviado: string = '';
   claveEnviado: string = '';
   rolEnviado: number = 0;
-
-  idConductor: number = 1
-  mailConductor: string = 'conductor@gmail.com';
-  claveConductor: string = 'Conductor_123';
-
-  idpasajero: number = 2
-  mailPasajero: string = 'pasajero@gmail.com';
-  clavePasajero: string = 'Pasajero_123';
 
   constructor(private router: Router, private bd: BasededatosService, private alertController: AlertController, private toastController: ToastController) { }
 
   ngOnInit() {
   }
 
+  mostrarListaUsuarios() {
+    this.bd.getAllUsuarios().then((usuarios: Usuarios[]) => {
+      this.usuarios = usuarios;
+    }).catch(error => {
+      console.error('Error al obtener todos los usuarios en InicioSesionPage:', error);
+      // Puedes manejar el error según tus necesidades
+    });
+  }
+
   async mostrarMensaje() {
     const alert = await this.alertController.create({
       header: 'Te damos la bienvenida',
-      message: 'Usuario iniciado exitosamente: '+ this.rolEnviado,
+      message: 'Usuario iniciado exitosamente',
       buttons: [
         {
           text: 'OK',
@@ -48,6 +51,17 @@ export class IniciosesionPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  limpiarTablaUsuarios() {
+    // Llama a la función en tu servicio que limpia la tabla de usuarios
+    this.bd.limpiarTablaUsuarios().then(() => {
+      this.mensajes.push('Tabla de usuarios limpiada exitosamente');
+      console.log('Tabla de usuarios limpiada exitosamente');
+    }).catch(error => {
+      this.mensajes.push('Error al limpiar la tabla de usuarios: ', error);
+      console.error('Error al limpiar la tabla de usuarios:', error);
+    });
   }
 
   iniciarSesion() {
@@ -71,6 +85,7 @@ export class IniciosesionPage implements OnInit {
       .then((usuarios) => {
         if (usuarios.length > 0) {
           const usuario = usuarios[0];
+          const idRolUsuario = usuario.fk_idrol;
 
           // Autenticación exitosa, redirigir a la página de perfil con información adicional
           let navigationExtras: NavigationExtras = {
@@ -78,7 +93,7 @@ export class IniciosesionPage implements OnInit {
               usuario: {
                 mailEnviado: this.correo,
                 claveEnviado: this.clave,
-                rolEnviado: usuario.id_rol
+                rolEnviado: idRolUsuario
               }
             }
           };

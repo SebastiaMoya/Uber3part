@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertController, ToastController } from '@ionic/angular';
-
-
+import { BasededatosService } from 'src/app/services/basededatos.service';
+import { Usuarios } from 'src/app/services/usuarios';
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.page.html',
@@ -14,77 +14,65 @@ export class PerfilPage implements OnInit {
   rolRecibido: number = 0;
   patente: string = 'aa123bb';
 
-  dirPartida: string = '';
-  dirDestino: string = '';
-  asientos: number = 0;
-  comentarios: string = '';
+
+  idRolUsuario: number = 0; // Declarar la variable idRolUsuario
 
   constructor(private router: Router,
     private activeRouter: ActivatedRoute,
-    private alertController: AlertController, private toastController: ToastController) { }
+    private alertController: AlertController, private toastController: ToastController,
+    private bd: BasededatosService) { }
+
+
+  ngOnInit() {
+
+    // Declarar la variable idRolUsuario aquí y asignarle un valor por defecto
+    this.idRolUsuario = 0;
+
+    this.activeRouter.queryParams.subscribe(param => {
+      // Preguntamos si viene información en la redirección
+      if (this.router.getCurrentNavigation()?.extras.state) {
+        // Guardamos la info en variables propias
+        this.mailRecibido = this.router.getCurrentNavigation()?.extras?.state?.['mailEnviado'];
+        //this.mostrarMensaje('correo: ' + this.mailRecibido);
+        this.claveRecibido = this.router.getCurrentNavigation()?.extras?.state?.['claveEnviado'];
+        //this.mostrarMensaje('clave: ' + this.claveRecibido);
+        this.rolRecibido = this.router.getCurrentNavigation()?.extras?.state?.['rolEnviado'];
+      //  this.mostrarMensaje('todo bien, id_rol del usuario: ' + 'correo: ' + this.mailRecibido + this.rolRecibido + 'clave: ' + this.claveRecibido);
+
+        // Ahora asignamos el valor dentro del bloque then
+        this.bd.buscarUsuarioPorCorreo(this.mailRecibido).then(result => {
+          this.idRolUsuario = result.fk_idrol;
+          //console.log('ID del rol del usuario:', this.idRolUsuario);
+        }).catch(error => {
+          console.error('Error al buscar usuario:', error);
+          // Manejo de errores
+        });
+      }
+    });
+  }
 
 
   //.................................
 
-  async presentarAlerta() {
+  async mostrarMensaje(mensaje: string) {
     const alert = await this.alertController.create({
-      header: 'Publicar Viaje',
+      header: 'Te damos la bienvenida',
+      message: 'Valor de fk_idrol: ',
       buttons: [
         {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancelado');
-          },
-        },
-        {
-          text: 'Publicar viaje',
-          handler: () => {
-            this.mostrarMensaje('Viaje publicado');
-          },
-        },
-      ],
-      inputs: [
-        {
-          name: 'dirPartida',
-          type: 'text',
-          placeholder: 'Dirección de partida',
-        },
-        {
-          name: 'dirDestino',
-          type: 'text',
-          placeholder: 'Dirección de destino',
-        },
-        {
-          name: 'asientos',
-          type: 'number',
-          placeholder: 'Cantidad de asientos',
-          min: 1,
-          max: 10,
-        },
-        {
-          name: 'comentarios',
-          type: 'textarea',
-          placeholder: 'Comentarios del conductor',
-        },
-      ],
+          text: 'OK',
+          role: 'ok',
+          cssClass: 'primary',
+          handler: (blah) => {
+          }
+        }
+      ]
     });
 
     await alert.present();
   }
 
-  mostrarMensaje(mensaje: string) {
-    const toast = this.toastController.create({
-      message: mensaje,
-      duration: 2000,
-      position: 'middle',
-    });
-    toast.then(t => t.present());
-  }
 
-  publicarViaje() {
-    this.presentarAlerta();
-  }
   //.......................................................  
 
   async editarPatente() {
@@ -121,31 +109,36 @@ export class PerfilPage implements OnInit {
 
   //-------------------------------------------
 
-  cerrarSesion() {
-    // Aquí deberías implementar la lógica para cerrar sesión
-    // Por ejemplo, limpiar el estado de la sesión y redirigir al inicio de sesión
-    this.router.navigate(['/iniciosesion']);
+  async cerrarSesion() {
+    const alert = await this.alertController.create({
+      header: 'Cerrar sesión',
+      message: '¿Estás seguro de que quieres cerrar sesión?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            // El usuario canceló el cierre de sesión
+          }
+        }, {
+          text: 'Sí',
+          handler: () => {
+            // Lógica para cerrar sesión
+            // Por ejemplo, redireccionar a la página de inicio de sesión
+            this.router.navigate(['/iniciosesion']);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   IrModificar() {
     this.router.navigate(['/modificarperfil']);
   }
 
-  ngOnInit() {
-    this.activeRouter.queryParams.subscribe(param => {
-      //preguntamos si viene informacion en la redireccion
-      if (this.router.getCurrentNavigation()?.extras.state) {
-        //guardamos la info en variables propias
 
-        this.mailRecibido = this.router.getCurrentNavigation()?.extras?.state?.['mailEnviado'];
-        this.mostrarMensaje('1');
-        this.claveRecibido = this.router.getCurrentNavigation()?.extras?.state?.['claveEnviado'];
-        this.mostrarMensaje('2');
-        this.rolRecibido = this.router.getCurrentNavigation()?.extras?.state?.['rolEnviado'];
-        this.mostrarMensaje('todo bien, id_rol del usuario: ' + this.rolRecibido);
-
-      }
-    })
-  }
 
 }
