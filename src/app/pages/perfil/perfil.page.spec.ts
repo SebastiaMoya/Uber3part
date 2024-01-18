@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PerfilPage } from './perfil.page';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 
 describe('PerfilPage', () => {
   let component: PerfilPage;
@@ -11,6 +12,7 @@ describe('PerfilPage', () => {
 
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule],
+      providers: [SQLite]
     }).compileComponents();
 
     fixture = TestBed.createComponent(PerfilPage);

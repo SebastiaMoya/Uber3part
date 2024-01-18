@@ -10,16 +10,15 @@ import { Usuarios } from 'src/app/services/usuarios';
   styleUrls: ['./iniciosesion.page.scss'],
 })
 export class IniciosesionPage implements OnInit {
+  idUserfromBD: number = 0;
   mensajes: string[] = [];
   correo: string = '';
   clave: string = '';
-  fk_idrol: number = 0;
 
   usuarios: Usuarios[] = [];
 
   mailEnviado: string = '';
   claveEnviado: string = '';
-  rolEnviado: number = 0;
 
   constructor(private router: Router, private bd: BasededatosService, private alertController: AlertController, private toastController: ToastController) { }
 
@@ -38,7 +37,7 @@ export class IniciosesionPage implements OnInit {
   async mostrarMensaje() {
     const alert = await this.alertController.create({
       header: 'Te damos la bienvenida',
-      message: 'Usuario iniciado exitosamente',
+      message: 'Usuario iniciado exitosamente: ',
       buttons: [
         {
           text: 'OK',
@@ -81,24 +80,12 @@ export class IniciosesionPage implements OnInit {
     }
 
     // Llamar a la función de búsqueda en la base de datos
-    this.bd.buscarUsuarios(this.correo, this.clave)
-      .then((usuarios) => {
-        if (usuarios.length > 0) {
-          const usuario = usuarios[0];
-          const idRolUsuario = usuario.fk_idrol;
-
-          // Autenticación exitosa, redirigir a la página de perfil con información adicional
-          let navigationExtras: NavigationExtras = {
-            state: {
-              usuario: {
-                mailEnviado: this.correo,
-                claveEnviado: this.clave,
-                rolEnviado: idRolUsuario
-              }
-            }
-          };
-          this.mostrarMensaje();
-          this.router.navigate(['/perfil'], navigationExtras);
+    this.bd.buscarUsuarioId(this.correo, this.clave)
+      .then((idUser) => {
+        if (idUser !== null) {
+          // Autenticación exitosa, guardar el ID del usuario
+          this.idUserfromBD = idUser;
+          this.enviarIdPerfil();
         } else {
           // Credenciales incorrectas
           this.mensajes.push('Credenciales incorrectas. Inténtalo de nuevo.');
@@ -112,4 +99,36 @@ export class IniciosesionPage implements OnInit {
       });
 
   }
+
+  async presentAlert(msj: string) {
+    const alert = await this.alertController.create({
+      header: 'Mensaje Importante',
+      message: msj,
+      buttons: ['OK'],
+    });
+
+    await alert.present();
+  }
+
+  enviarIdPerfil() {
+    this.presentAlert('id antes de enviar: '+this.idUserfromBD);
+    // Verifica si hay un ID de usuario almacenado
+    if (this.idUserfromBD) {
+      // Configura la información que deseas enviar
+      let navigationExtras: NavigationExtras = {
+        state: {
+          // Renombrar la variable a IdUserToPerfil para mayor claridad
+          IdUserToPerfil: this.idUserfromBD
+        }
+      };
+      // Navega a la página de perfil y pasa la información como estado 
+      this.presentAlert('id despues de enviar '+ this.idUserfromBD);
+      this.mostrarMensaje();
+      this.router.navigate(['/perfil'], navigationExtras);
+    } else {
+      // Credenciales incorrectas
+      this.mensajes.push('Usuario no encontrado');
+    }
+  }
+  
 }

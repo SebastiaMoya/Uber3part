@@ -1,6 +1,16 @@
-
-
 <div class="logoCont">
-  <img src="assets/img/Logo-provisional.png" alt="Logo de la App" class="logo">
+  <ion-img src="assets/img/Logo-provisional.png" alt="Logo de la App" class="logo"></ion-img>
 </div>
 
+<ion-list *ngIf="climaData" class="clima-container">
+  <ion-item class="climaCont">
+    <ion-thumbnail slot="start">
+      <ion-img [src]="climaData.current.condition.icon" alt="Clima Icon" class="climaIcon"></ion-img>
+    </ion-thumbnail>
+    <ion-label>
+      <h2>{{ climaData.location.name }}</h2>
+      <p>{{ climaData.current.condition.text }}</p>
+      <p>{{ climaData.current.temp_c }}°C</p>
+    </ion-label>
+  </ion-item>
+</ion-list>

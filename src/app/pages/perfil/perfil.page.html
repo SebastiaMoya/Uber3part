@@ -1,11 +1,11 @@
 <ion-content class="login-content">
-  <div class="login-container">
+  <div *ngIf="datosUsuario" class="login-container">
 
     <app-comp1></app-comp1>
 
     <!----Conductor-->
 
-    <ion-card *ngIf="idRolUsuario === 2">
+    <ion-card *ngIf="datosUsuario.fk_idrol === 2">
 
       <ion-card-header>
         <ion-toolbar>
@@ -35,7 +35,7 @@
               <ion-icon name="car"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              <p>Conductor</p>
+              <p>{{ datosUsuario.nombre_rol }}</p>
             </ion-col>
           </ion-row>
         </ion-item>
@@ -58,7 +58,7 @@
               <ion-icon name="person"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              Maria Jose
+              {{ datosUsuario.nombreuser }}
             </ion-col>
           </ion-row>
         </ion-item>
@@ -69,7 +69,7 @@
               <ion-icon name="mail"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              {{ mailRecibido }}
+              {{ datosUsuario.correo }}
             </ion-col>
           </ion-row>
         </ion-item>
@@ -88,7 +88,7 @@
 
     <!----Pasajero-->
 
-    <ion-card *ngIf="rolRecibido === 1">
+    <ion-card *ngIf="datosUsuario.fk_idrol === 1">
 
       <ion-card-header>
         <ion-toolbar>
@@ -115,7 +115,7 @@
               <ion-icon name="walk"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              <p>Pasajero</p>
+              <p>{{ datosUsuario.nombre_rol }}</p>
             </ion-col>
           </ion-row>
         </ion-item>
@@ -126,7 +126,7 @@
               <ion-icon name="person"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              Jose Maria
+              {{ datosUsuario.nombreuser }}
             </ion-col>
           </ion-row>
         </ion-item>
@@ -137,7 +137,7 @@
               <ion-icon name="mail"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              {{ mailRecibido }}
+              {{ datosUsuario.correo }}
             </ion-col>
           </ion-row>
         </ion-item>
@@ -154,98 +154,36 @@
 
     </ion-card>
 
-    <!--------------------------------------->
-    <!-----------Si nada funciona------------>
-    <!--------------------------------------->
-    <ion-card *ngIf="idRolUsuario === 0">
+  </div> 
+  
+  <ion-card class="ion-padding">
+    <ion-list *ngIf="datosUsuario">
+      <ion-item>
+        <ion-label>Nombre de Usuario:</ion-label>
+        <ion-note slot="end">{{ datosUsuario.nombreuser }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Correo Electrónico:</ion-label>
+        <ion-note slot="end">{{ datosUsuario.correo }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Clave:</ion-label>
+        <ion-note slot="end">{{ datosUsuario.clave }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Respuesta:</ion-label>
+        <ion-note slot="end">{{ datosUsuario.respuesta }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Rol:</ion-label>
+        <ion-note slot="end">{{ datosUsuario.nombre_rol }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Pregunta de Seguridad:</ion-label>
+        <ion-note slot="end">{{ datosUsuario.pregunta }}</ion-note>
+      </ion-item>
+      <!-- Agrega más elementos según las columnas de tu tabla usuarios -->
+    </ion-list>
+  </ion-card>
 
-      <ion-card-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <!-- Cambié el slot de "end" a "start" y el icono a log-out -->
-            <ion-button fill="clear" (click)="cerrarSesion()" class="back-button">
-              <ion-icon name="log-out"></ion-icon>
-            </ion-button>
-            <ion-button fill="clear" (click)="IrModificar()">
-              <ion-icon name="settings"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-
-          <!-- Añadí una clase para centrar el texto -->
-          <ion-card-title class="centered-title" color="light">Perfil</ion-card-title>
-        </ion-toolbar>
-      </ion-card-header>
-
-
-
-      <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
-
-      <ion-card-content class="centered-content">
-        <ion-item class="centered-item">
-          <ion-row>
-            <ion-col size="12" class="icon-col">
-
-              <ion-icon name="help"></ion-icon>
-
-            </ion-col>
-            <ion-col size="12">
-              <p>Usuario sin rol</p>
-            </ion-col>
-          </ion-row>
-        </ion-item>
-
-        <ion-item class="centered-item">
-          <ion-row>
-            <ion-col size="12">
-              <p> {{ patente | uppercase }} </p>
-            </ion-col>
-            <ion-col size="7">
-              <!-- Agregué un ion-icon para editar -->
-              <ion-icon name="create" (click)="editarPatente()" class="edit-icon"></ion-icon>
-            </ion-col>
-          </ion-row>
-        </ion-item>
-
-        <ion-item class="centered-item">
-          <ion-row>
-            <ion-col size="12" class="icon-col">
-              <ion-icon name="person"></ion-icon>
-            </ion-col>
-            <ion-col size="12">
-              Maria Jose
-            </ion-col>
-          </ion-row>
-        </ion-item>
-
-        <ion-item class="centered-item">
-          <ion-row>
-            <ion-col size="12" class="icon-col">
-              <ion-icon name="mail"></ion-icon>
-            </ion-col>
-            <ion-col size="12">
-              {{ mailRecibido }}
-            </ion-col>
-          </ion-row>
-        </ion-item>
-      </ion-card-content>
-
-      <div class="wrapper">
-
-        <div [routerLink]="'/buscarviaje'" class="ion-activatable ripple-parent custom-parent">
-          Buscar Viaje
-          <ion-ripple-effect></ion-ripple-effect>
-        </div>
-
-      </div>
-
-
-      <div class="wrapper">
-        <div id="present-alert" class="ion-activatable ripple-parent custom-parent" [routerLink]="'/publicarviaje'">
-          Publicar Viaje
-          <ion-ripple-effect></ion-ripple-effect>
-        </div>
-      </div>
-
-    </ion-card>
-  </div>
 </ion-content>

@@ -1,11 +1,27 @@
 .logoCont {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
 
-    .logo {
-      max-width: 20%;
-      margin: 5px auto;
-    }
+  .logo {
+    max-width: 20%;
+    margin: 5px auto;
   }
+}
+
+.climaCont {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px;
+
+  .climaIcon {
+    font-size: 32px;  // Tamaño del icono del clima
+  }
+
+  .temperatura {
+    font-size: 18px;  // Tamaño del texto de temperatura
+    margin-top: 5px;
+  }
+}

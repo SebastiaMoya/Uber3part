@@ -162,17 +162,22 @@ export class BasededatosService {
 
   }
 
+  // Función para verificar si el correo ya existe
   verificarCorreoExistente(correo: string): Promise<boolean> {
-    return this.conexionBD.executeSql('SELECT COUNT(*) AS cantidad FROM usuario WHERE correo = ?', [correo])
+    const verificarCorreoQuery = 'SELECT COUNT(*) AS cantidad FROM usuario WHERE correo = ?';
+    const parametrosCorreo = [correo];
+
+    return this.conexionBD.executeSql(verificarCorreoQuery, parametrosCorreo)
       .then(res => {
-        // Si la cantidad es mayor que 0, significa que el correo ya existe
-        return res.rows.item(0).cantidad > 0;
+        const cantidad = res.rows.item(0).cantidad;
+        return cantidad > 0; // Retorna true si el correo ya existe, false si no existe
       })
-      .catch(error => {
-        console.error('Error al verificar correo existente:', error);
-        throw error; // Propaga el error para que pueda ser manejado en el componente
+      .catch(e => {
+        console.error('Error al verificar el correo existente:', e);
+        throw e; // Re-lanzar el error para que pueda ser manejado en la llamada.
       });
   }
+
 
 
 
@@ -188,50 +193,58 @@ export class BasededatosService {
   }
 
 
-  buscarUsuarioPorCorreo(correo: string): Promise<{ id_usuario: number, fk_idrol: number }> {
-    return this.conexionBD.executeSql('SELECT id_usuario, fk_idrol FROM usuario WHERE correo = ?', [correo])
+  buscarUsuarioId(correo: string, clave: string): Promise<number | null> {
+    return this.conexionBD.executeSql('SELECT id_usuario FROM usuario WHERE correo = ? AND clave = ?', [correo, clave])
       .then(res => {
         if (res.rows.length > 0) {
-          const usuario = res.rows.item(0);
-          return { id_usuario: usuario.id_usuario, fk_idrol: usuario.fk_idrol };
+          const idUsuario = res.rows.item(0).id_usuario;
+          console.log('ID de usuario obtenido:', idUsuario);
+          return idUsuario;
         } else {
-          throw new Error("Usuario no encontrado");
+          // Si no se encuentra ningún usuario, puedes devolver null o algún valor que indique que no se encontró.
+          this.presentAlert("Error: Usuario no encontrado");
+          return null;
         }
       })
       .catch(e => {
-        console.error("Error al buscar usuario:", e);
-        throw new Error("Error al buscar usuario: " + JSON.stringify(e));
+        console.error("Error en select usuario ID:", e);
+        throw new Error("Error en select usuario ID: " + JSON.stringify(e));
       });
   }
+  
+  
 
+  obtenerDatosUsuario(idUsuario: number): Promise<any> {
+    const query = `
+      SELECT usuario.*, rol.nombre_rol, pregunta.pregunta
+      FROM usuario
+      INNER JOIN rol ON usuario.fk_idrol = rol.id_rol
+      INNER JOIN pregunta ON usuario.fk_idpregunta = pregunta.id_pregunta
+      WHERE usuario.id_usuario = ?
+    `;
 
-
-  buscarUsuarios(correo: string, clave: string): Promise<Usuarios[]> {
-    return this.conexionBD.executeSql('SELECT * FROM usuario INNER JOIN rol ON usuario.fk_idrol = rol.id_rol WHERE correo = ? AND clave = ?', [correo, clave])
-      .then(res => {
-        let items: Usuarios[] = [];
+    return this.sqlite.create({ name: 'StudyCaravan.db', location: 'default' }).then((db: SQLiteObject) => {
+      return db.executeSql(query, [idUsuario]).then(res => {
+        let usuario: any = null;
 
         if (res.rows.length > 0) {
-          for (let i = 0; i < res.rows.length; i++) {
-            items.push({
-              id_usuario: res.rows.item(i).id_usuario,
-              nombreuser: res.rows.item(i).nombreuser,
-              correo: res.rows.item(i).correo,
-              clave: res.rows.item(i).clave,
-              respuesta: res.rows.item(i).respuesta,
-              fk_idrol: res.rows.item(i).fk_idrol,
-              id_rol: res.rows.item(i).id_rol,
-              fk_idpregunta: res.rows.item(i).fk_idpregunta
-            });
-          }
+          usuario = {
+            id_usuario: res.rows.item(0).id_usuario,
+            nombreuser: res.rows.item(0).nombreuser,
+            correo: res.rows.item(0).correo,
+            clave: res.rows.item(0).clave,
+            respuesta: res.rows.item(0).respuesta,
+            fk_idrol: res.rows.item(0).fk_idrol,
+            id_rol: res.rows.item(0).id_rol,
+            fk_idpregunta: res.rows.item(0).fk_idpregunta,
+            nombre_rol: res.rows.item(0).nombre_rol,
+            pregunta: res.rows.item(0).pregunta,
+          };
         }
 
-        return items;
-      })
-      .catch(e => {
-        console.error("Error en select join:", e);
-        throw new Error("Error en select join: " + JSON.stringify(e));
+        return usuario;
       });
+    });
   }
 
 

@@ -13,7 +13,9 @@ export class BuscarviajePage implements OnInit {
 
   viajes: Viaje[] = [];
 
-  constructor(private alertController: AlertController, private bd: BasededatosService) { }
+  constructor(private alertController: AlertController, private bd: BasededatosService) {
+    
+  }
 
   printCurrentPosition = async () => {
     const coordinates = await Geolocation.getCurrentPosition();
