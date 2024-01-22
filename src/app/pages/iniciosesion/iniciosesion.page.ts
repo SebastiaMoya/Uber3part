@@ -100,18 +100,7 @@ export class IniciosesionPage implements OnInit {
 
   }
 
-  async presentAlert(msj: string) {
-    const alert = await this.alertController.create({
-      header: 'Mensaje Importante',
-      message: msj,
-      buttons: ['OK'],
-    });
-
-    await alert.present();
-  }
-
   enviarIdPerfil() {
-    this.presentAlert('id antes de enviar: '+this.idUserfromBD);
     // Verifica si hay un ID de usuario almacenado
     if (this.idUserfromBD) {
       // Configura la información que deseas enviar
@@ -121,8 +110,6 @@ export class IniciosesionPage implements OnInit {
           IdUserToPerfil: this.idUserfromBD
         }
       };
-      // Navega a la página de perfil y pasa la información como estado 
-      this.presentAlert('id despues de enviar '+ this.idUserfromBD);
       this.mostrarMensaje();
       this.router.navigate(['/perfil'], navigationExtras);
     } else {
