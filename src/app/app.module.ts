@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ClimaService } from './services/clima.service';
 
 
+
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],

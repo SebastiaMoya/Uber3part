@@ -70,5 +70,23 @@
 
     <ion-button fill="outline" color="dark" (click)="printCurrentPosition()">Permitir acceso a la ubicacion</ion-button>
 
+
+    <ion-item>
+      <div container> 
+        <h1>Clima !</h1> 
+        <form>
+          <input type="text" name="cityName" >placeholder="Seleccione el nombre de su ciudad" [(ngModel)]="city">
+          <button type="button" (click)="getclima()">Obtener clima</button>
+        </form>
+        
+        <div *ngIf="weatherData">
+          <h2>{{ weatherData.name }} </h2>
+          <p>Temperatura: {{ weatherData.main.temp }} </p>
+          <p>Humedad: {{ weatherData.main.humidity }} </p>
+          <p>Clima: {{ weatherData[0].description }} </p>
+        </div>
+      </div> 
+    </ion-item>
+      
+  
   </ion-list>
-</ion-content>

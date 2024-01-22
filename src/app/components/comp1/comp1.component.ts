@@ -9,24 +9,11 @@ import { ClimaService } from 'src/app/services/clima.service';
 })
 export class Comp1Component implements OnInit {
 
-  climaData: any;
+  
 
-  constructor(private api: ClimaService, private activedroute: ActivatedRoute) { }
+  constructor() { }
 
   ngOnInit() {
-    this.obtenerclima(); 
+    
   }
-
-
-  obtenerclima() {
-    this.api.getclima().subscribe((data) => {
-      this.climaData = data;
-      console.log('Datos del clima:', this.climaData);
-    });
-  }
-
-  ionViewWillEnter() {
-    this.obtenerclima();
-  }
-
 }

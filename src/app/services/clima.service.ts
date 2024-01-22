@@ -8,16 +8,12 @@ import { Observable, retry } from 'rxjs';
 export class ClimaService {
 
   
-  apiurl = "https://api.weatherapi.com/v1/current.json?key=d098dbd03632419a9f3201430230811&q=santiago&aqi=no";
+  apiKey = "5567e80d7750c20b518461c7273e8461";
   
   constructor(private http:HttpClient) { }
+    
+  getclima(city: string){
+    return this.http.get('https://api.openweathermap.org/data/2.5/weather?q={cityname}&appid={this.apiKey}');
 
-  getclima():Observable<any>{
-    return this.http.get(this.apiurl).pipe(
-      retry(3)
-    );
-  }
 }
-
-
-//http://api.weatherapi.com/v1/current.json?key=d098dbd03632419a9f3201430230811&q=Santiago&aqi=no
+}
