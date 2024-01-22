@@ -41,7 +41,21 @@ export class BuscarviajePage implements OnInit {
 
 
   ngOnInit() {
-    this.cargarViajes();
+    // Llama a las funciones del servicio para obtener viajes
+    this.bd.obtenerViajes()
+      .then(viajes => this.viajes = viajes)
+      .catch(error => console.error('Error al obtener viajes:', error));
+  }
+
+  mostrarDetalles(viaje: Viaje) {
+    // Puedes abrir un modal o navegar a otra página para mostrar detalles
+    // En este ejemplo, estoy mostrando un mensaje de alerta, pero puedes personalizarlo según tus necesidades
+    this.alertController.create({
+      header: viaje.direcdestino,
+      subHeader: `Patente del vehículo: ${viaje.fk_patente}`,
+      message: `Dirección de partida: ${viaje.direcinicio}`,
+      buttons: ['OK']
+    }).then(alert => alert.present());
   }
 
   getclima() {
@@ -52,27 +66,7 @@ export class BuscarviajePage implements OnInit {
     })
   }
 
-  // Ejemplo de función para obtener el nombre de la comuna
-  getNombreComuna(fkComuna: number): Promise<string> {
-    return this.bd.getNombreComuna(fkComuna).then(nombreComuna => {
-      return nombreComuna || 'Comuna Desconocida';
-    });
-  }
-
-  // Ejemplo de función para obtener el nombre de la sede
-  getNombreSede(fkSede: number): Promise<string> {
-    return this.bd.getNombreSede(fkSede).then(nombreSede => {
-      return nombreSede || 'Sede Desconocida';
-    });
-  }
-
-  cargarViajes() {
-    this.bd.getAllViajes().then(viajes => {
-      this.viajes = viajes;
-    }).catch(error => {
-      console.error('Error al cargar los viajes:', error);
-    });
-  }
+  
 
   public alertButtons = [
     {

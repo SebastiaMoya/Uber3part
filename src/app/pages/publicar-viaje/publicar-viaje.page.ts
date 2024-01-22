@@ -13,18 +13,18 @@ export class PublicarViajePage implements OnInit {
 
   fk_patente: string = '';
   horasalida: string = '';
-  asientos_disponibles: number = 0;
+  asientos_disponibles: number = 1;
   direcinicio: string = '';
   direcdestino: string = '';
-  precio: number = 0;
+  precio: number = 1000; // Valor por defecto de 1.000
 
   comunas: Comunas[] = [];
   sedes: Sedes[] = [];
-  mostrarListaComunas = false;
-  mostrarListaSedes = false;
+  mostrarComunas = false;
+  mostrarSedes = false;
 
 
-  mensajes: string[] = [];
+  mensajes: any[] = [];
 
 
   constructor(private alertController: AlertController, private bd: BasededatosService) { }
@@ -42,35 +42,32 @@ export class PublicarViajePage implements OnInit {
 
   //-------funciones de validación
 
-  mostrarComunas() {
-    this.mostrarListaComunas = !this.mostrarListaComunas;
-    this.mostrarListaSedes = false; // Oculta la lista de sedes al mostrar la lista de comunas
+  mostrarListaComunas() {
+    this.mostrarComunas = !this.mostrarComunas;
   }
 
-  mostrarSedes() {
-    this.mostrarListaSedes = !this.mostrarListaSedes;
-    this.mostrarListaComunas = false; // Oculta la lista de comunas al mostrar la lista de sedes
+  mostrarListaSedes() {
+    this.mostrarSedes = !this.mostrarSedes;
   }
 
 
   validarDireccion() {
-    // Obtén los IDs de las comunas y sedes
-    const idsComunas = this.comunas.map(comuna => comuna.id_comuna);
-    const idsSedes = this.sedes.map(sede => sede.id_sede);
-  
+    // Obtén los nombres de las comunas y sedes
+    const nombresComunas = this.comunas.map(comuna => comuna.nombre_comuna.toLowerCase());
+    const nombresSedes = this.sedes.map(sede => sede.nombre_sede.toLowerCase());
+
     // Concatena ambos arrays
-    const idsComunasYSedes = [...idsComunas, ...idsSedes];
-  
-    // Verifica si la dirección de salida coincide con algún ID de comuna o sede
-    const direccionValida = idsComunasYSedes.some(id => this.direcinicio.includes(id.toString()));
-  
+    const nombresComunasYSedes = [...nombresComunas, ...nombresSedes];
+
+    // Verifica si la dirección de salida coincide con algún nombre de comuna o sede
+    const direccionValida = nombresComunasYSedes.some(nombre => this.direcinicio.toLowerCase().includes(nombre));
+
     if (direccionValida) {
       console.log('La dirección es válida.');
     } else {
       console.log('La dirección no coincide con ninguna comuna o sede.');
     }
   }
-  
 
   validateHoraSalida(): boolean {
     const regexHora = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
@@ -84,9 +81,12 @@ export class PublicarViajePage implements OnInit {
   }
 
 
-  formatPrecio(precioString: string): number {
-    return parseInt(precioString, 10);
+  validatePrecio(precioString: string): boolean {
+    const regexPrecio = /^[1-9]\d*(\.\d{1,3})?$/;
+    return regexPrecio.test(precioString);
   }
+  
+
 
   limitarCaracteres(event: any, maxLength: number): void {
     const input = event.target as HTMLInputElement;
@@ -131,8 +131,14 @@ export class PublicarViajePage implements OnInit {
       return;
     }
 
+    // Validar formato del precio
+    if (!this.validatePrecio(this.precio.toString())) {
+      this.mensajes.push('Formato de precio incorrecto. Utiliza el formato correcto.');
+      return;
+    }
+
     // Antes de la llamada a la función de inserción
-    console.log('Valores del formulario:', this.horasalida, this.asientos_disponibles, this.precio, this.direcinicio, this.direcdestino, this.fk_patente);
+    this.mensajes.push('Valores del formulario:', this.horasalida, this.asientos_disponibles, this.precio, this.direcinicio, this.direcdestino, this.fk_patente);
 
     // Realizar la inserción en la base de datos
     this.bd.insertarViaje(
@@ -150,8 +156,10 @@ export class PublicarViajePage implements OnInit {
     }).catch(error => {
       // Error en la inserción, mostrar mensaje de error
       this.mensajes.push('Error al publicar el viaje. Inténtelo de nuevo.' + JSON.stringify(error));
+      console.error('Error al insertar el viaje:', error);
       // Puedes agregar más lógica para manejar el error si es necesario
     });
+
   }
 
 
