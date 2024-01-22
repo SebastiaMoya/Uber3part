@@ -29,7 +29,7 @@ export class BasededatosService {
 
   tablaVehiculo: string = "CREATE TABLE IF NOT EXISTS vehiculo (patente VARCHAR(20) PRIMARY KEY, marca VARCHAR(50), modelo VARCHAR(20), cant_asientos INTEGER, color VARCHAR(10), fk_user INTEGER, FOREIGN KEY (fk_user) REFERENCES usuario(id_usuario));";
 
-  tablaViaje: string = "CREATE TABLE IF NOT EXISTS viaje (id_viaje INTEGER PRIMARY KEY AUTOINCREMENT, horasalida VARCHAR(5) NOT NULL, asientos_disponibles INTEGER, fk_comuna INTEGER, fk_sede INTEGER, fk_patente VARCHAR(20), FOREIGN KEY (fk_comuna) REFERENCES comuna(id_comuna), FOREIGN KEY (fk_sede) REFERENCES sede(id_sede), FOREIGN KEY (fk_patente) REFERENCES vehiculo(patente));";
+  tablaViaje: string = "CREATE TABLE IF NOT EXISTS viaje (id_viaje INTEGER PRIMARY KEY AUTOINCREMENT, horasalida VARCHAR(5) NOT NULL, asientos_disponibles INTEGER, precio INTEGER, direcinicio VARCHAR(70), direcdestino VARCHAR(70),fk_patente VARCHAR(20), FOREIGN KEY (fk_patente) REFERENCES vehiculo(patente));";
 
   tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalleviaje (id_detalle INTEGER PRIMARY KEY AUTOINCREMENT, fk_viaje INTEGER, fk_user INTEGER, FOREIGN KEY (fk_viaje) REFERENCES viaje(id_viaje), FOREIGN KEY (fk_user) REFERENCES usuario(id_usuario));";
 
@@ -43,12 +43,16 @@ export class BasededatosService {
 
   insertsede1: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede) VALUES (1,'Plaza norte');";
   insertsede2: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede) VALUES (2,'Alameda');";
+  insertsede3: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede) VALUES (3,'Padre Alonso de Ovalle');";
+  insertsede4: string = "INSERT or IGNORE INTO sede(id_sede,nombre_sede) VALUES (4,'Plaza Oeste');";
 
   insertcomuna1: string = "INSERT or IGNORE INTO comuna(id_comuna,nombre_comuna) VALUES (1,'La florida');";
   insertcomuna2: string = "INSERT or IGNORE INTO comuna(id_comuna,nombre_comuna) VALUES (2,'Quilicura');";
 
   insertUsuario1: string = "INSERT or IGNORE INTO usuario(id_usuario,nombreuser,correo,clave,respuesta,fk_idrol,fk_idpregunta) VALUES (1,'Tulio Tribiño','31@gmail.com','31_Minutos', 'plata', 1, 2);";
   insertUsuario2: string = "INSERT or IGNORE INTO usuario(id_usuario,nombreuser,correo,clave,respuesta,fk_idrol,fk_idpregunta) VALUES (2,'Bodoque','Bodoque@gmail.com','31_Minutos', 'Vino', 2, 1);";
+
+  insertVehiculo1: string = "INSERT or IGNORE INTO vehiculo(patente,marca,modelo,cant_asientos,color,fk_user) VALUES ('bb456cc','Chevrolet','Chevrolet Beat', 7, 'verde', 2);";
 
 
   //variables para los observables de las consultas a las tablas
@@ -145,13 +149,17 @@ export class BasededatosService {
       await this.conexionBD.executeSql(this.insertsede1, []);
       //this.presentAlert("15");
       await this.conexionBD.executeSql(this.insertsede2, []);
+      //this.presentAlert("15");
+      await this.conexionBD.executeSql(this.insertsede3, []);
+      //this.presentAlert("15");
+      await this.conexionBD.executeSql(this.insertsede4, []);
       //this.presentAlert("16");
-      //this.presentAlert("10");
       //this.buscarUsuarios();
       await this.conexionBD.executeSql(this.insertUsuario1, []);
       //this.presentAlert("11");
       await this.conexionBD.executeSql(this.insertUsuario2, []);
       //this.presentAlert("12");
+      await this.conexionBD.executeSql(this.insertVehiculo1, []);
       //actualizo el observable de la base de datos
       this.isDBReady.next(true);
       //this.presentAlert("Proceso completado");
@@ -211,8 +219,8 @@ export class BasededatosService {
         throw new Error("Error en select usuario ID: " + JSON.stringify(e));
       });
   }
-  
-  
+
+
 
   obtenerDatosUsuario(idUsuario: number): Promise<any> {
     const query = `
@@ -295,162 +303,54 @@ export class BasededatosService {
   }
 
   //----------------------------------------------------------------------
+  //-------------------------------Viajes---------------------------------
+  //----------------------------------------------------------------------
 
-  async obtenerSedes(): Promise<any[]> {
-    return this.sqlite.create({
-      name: 'tu_base_de_datos.db',
-      location: 'default'
-    }).then((db: SQLiteObject) => {
-      return db.executeSql('SELECT * FROM sede', []).then(data => {
-        let sedes = [];
-        if (data.rows.length > 0) {
-          for (let i = 0; i < data.rows.length; i++) {
-            sedes.push(data.rows.item(i));
-          }
-        }
-        return sedes;
+  insertarViaje(horasalida: string, asientos_disponibles: number, precio: number, direcinicio: string, direcdestino: string, fk_patente: string): Promise<void> {
+    const query = 'INSERT INTO viaje (horasalida, asientos_disponibles, precio, direcinicio, direcdestino, fk_patente) VALUES (?, ?, ?, ?, ?, ?)';
+    const values = [horasalida, asientos_disponibles, precio, direcinicio, direcdestino, fk_patente];
+  
+    return this.conexionBD.executeSql(query, values)
+      .then(() => {
+        console.log('Viaje insertado correctamente');
+      })
+      .catch(error => {
+        console.error('Error al insertar el viaje:', error);
+        throw new Error('Error al insertar el viaje: ' + JSON.stringify(error));
       });
-    });
   }
+  
 
-  async obtenerComunas(): Promise<any[]> {
-    return this.sqlite.create({
-      name: 'tu_base_de_datos.db',
-      location: 'default'
-    }).then((db: SQLiteObject) => {
-      return db.executeSql('SELECT * FROM comuna', []).then(data => {
-        let comunas = [];
-        if (data.rows.length > 0) {
-          for (let i = 0; i < data.rows.length; i++) {
-            comunas.push(data.rows.item(i));
-          }
+  obtenerComunas(): Promise<Comunas[]> {
+    return this.conexionBD.executeSql('SELECT * FROM comuna', [])
+      .then(res => {
+        const comunas: Comunas[] = [];
+        for (let i = 0; i < res.rows.length; i++) {
+          comunas.push(res.rows.item(i) as Comunas);
         }
         return comunas;
-      });
-    });
-  }
-
-  insertarViaje(horasalida: string, asientos_disponibles: number, fk_comuna: number, fk_sede: number, fk_patente: string): Promise<number> {
-    return this.conexionBD.executeSql('INSERT INTO viaje(horasalida, asientos_disponibles, fk_comuna, fk_sede, fk_patente) VALUES (?, ?, ?, ?, ?)',
-      [horasalida, asientos_disponibles, fk_comuna, fk_sede, fk_patente]).then(res => {
-        // Obtener el ID del último viaje insertado
-        return res.insertId;
-      }).catch(e => {
-        this.presentAlert("Error en insert viaje: " + JSON.stringify(e));
-        throw e; // Re-lanzar el error para que pueda ser manejado en la llamada.
+      })
+      .catch(error => {
+        console.error('Error al obtener comunas:', error);
+        throw error;
       });
   }
 
-  getNombreComuna(fkComuna: number): Promise<string> {
-    const query = 'SELECT nombre_comuna FROM comuna WHERE id_comuna = ?';
-    return this.conexionBD.executeSql(query, [fkComuna]).then(res => {
-      if (res.rows.length > 0) {
-        return res.rows.item(0).nombre_comuna;
-      }
-      return ''; // O cualquier valor por defecto que desees
-    }).catch(error => {
-      console.error('Error al obtener nombre de comuna:', error);
-      throw new Error('Error al obtener nombre de comuna: ' + JSON.stringify(error));
-    });
-  }
-
-
-  getAllComunas(): Promise<Comunas[]> {
-    const query = `
-    SELECT *
-    FROM comuna
-  `;
-
-    return this.conexionBD.executeSql(query, []).then(res => {
-      let comunas: Comunas[] = [];
-
-      if (res.rows.length > 0) {
+  obtenerSedes(): Promise<Sedes[]> {
+    return this.conexionBD.executeSql('SELECT * FROM sede', [])
+      .then(res => {
+        const sedes: Sedes[] = [];
         for (let i = 0; i < res.rows.length; i++) {
-          comunas.push({
-            id_comuna: res.rows.item(i).id_comuna,
-            nombre_comuna: res.rows.item(i).nombre_comuna,
-            // Otros campos de la tabla comuna si los tienes
-          });
+          sedes.push(res.rows.item(i) as Sedes);
         }
-      }
-
-      return comunas;
-    }).catch(e => {
-      console.error("Error al obtener comunas:", e);
-      throw new Error("Error al obtener comunas: " + JSON.stringify(e));
-    });
+        return sedes;
+      })
+      .catch(error => {
+        console.error('Error al obtener sedes:', error);
+        throw error;
+      });
   }
 
-  getNombreSede(fkSede: number): Promise<string> {
-    const query = 'SELECT nombre_sede FROM sede WHERE id_sede = ?';
-    return this.conexionBD.executeSql(query, [fkSede]).then(res => {
-      if (res.rows.length > 0) {
-        return res.rows.item(0).nombre_sede;
-      }
-      return ''; // O cualquier valor por defecto que desees
-    }).catch(error => {
-      console.error('Error al obtener nombre de sede:', error);
-      throw new Error('Error al obtener nombre de sede: ' + JSON.stringify(error));
-    });
-  }
 
-  getAllSedes(): Promise<Sedes[]> {
-    const query = `
-    SELECT *
-    FROM sede
-  `;
-
-    return this.conexionBD.executeSql(query, []).then(res => {
-      let sedes: Sedes[] = [];
-
-      if (res.rows.length > 0) {
-        for (let i = 0; i < res.rows.length; i++) {
-          sedes.push({
-            id_sede: res.rows.item(i).id_sede,
-            nombre_sede: res.rows.item(i).nombre_sede,
-            // Otros campos de la tabla sede si los tienes
-          });
-        }
-      }
-
-      return sedes;
-    }).catch(e => {
-      console.error("Error al obtener sedes:", e);
-      throw new Error("Error al obtener sedes: " + JSON.stringify(e));
-    });
-  }
-
-  getAllViajes(): Promise<Viaje[]> {
-    const query = `
-      SELECT viaje.*, comuna.nombre_comuna, sede.nombre_sede
-      FROM viaje
-      INNER JOIN comuna ON viaje.fk_comuna = comuna.id_comuna
-      INNER JOIN sede ON viaje.fk_sede = sede.id_sede
-    `;
-
-    return this.conexionBD.executeSql(query, []).then(res => {
-      let viajes: Viaje[] = [];
-
-      if (res.rows.length > 0) {
-        for (let i = 0; i < res.rows.length; i++) {
-          viajes.push({
-            id_viaje: res.rows.item(i).id_viaje,
-            horasalida: res.rows.item(i).horasalida,
-            asientos_disponibles: res.rows.item(i).asientos_disponibles,
-            fk_comuna: res.rows.item(i).fk_comuna,
-            fk_sede: res.rows.item(i).fk_sede,
-            fk_patente: res.rows.item(i).fk_patente,
-            nombre_comuna: res.rows.item(i).nombre_comuna,
-            nombre_sede: res.rows.item(i).nombre_sede,
-          });
-        }
-      }
-
-      return viajes;
-    }).catch(e => {
-      console.error('Error al obtener viajes:', e);
-      throw new Error('Error al obtener viajes: ' + JSON.stringify(e));
-    });
-  }
-
+  //----------------------------------------------------------------------
 }
