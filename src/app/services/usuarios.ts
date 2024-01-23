@@ -7,4 +7,5 @@ export class Usuarios {
     fk_idrol: number = 0;
     id_rol: number = 0;
     fk_idpregunta: number = 0;
+    foto_usu = "";  
 }
