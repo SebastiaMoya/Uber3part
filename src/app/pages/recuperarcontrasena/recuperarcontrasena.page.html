@@ -27,12 +27,6 @@
 
       <ion-item class="centered-item">
         <ion-icon name="shield" slot="start"></ion-icon>
-        <ion-select [(ngModel)]="selectedSecurityQuestion" label="Pregunta de seguridad" label-placement="floating"
-          placeholder="Selecciona una Pregunta">
-          <ion-select-option value="apple">¿Juguete a los 5 años?</ion-select-option>
-          <ion-select-option value="banana">¿Programa favorito?</ion-select-option>
-          <ion-select-option value="orange">¿Bebida favorita?</ion-select-option>
-        </ion-select>
       </ion-item>
       <ion-item class="centered-item">
         <ion-icon name="shield-checkmark" slot="start"></ion-icon>
@@ -41,6 +35,7 @@
       </ion-item>
 
     </ion-card>
+
     <div *ngFor="let mensaje of mensajes" class="mensaje-error">
       {{ mensaje }}
     </div>
@@ -48,17 +43,12 @@
 
       <div class="wrapper">
 
-        <div class="ion-activatable ripple-parent custom-parent" (click)="Recuperar()">
+        <div class="ion-activatable ripple-parent custom-parent">
           Recuperar contraseña
           <ion-ripple-effect></ion-ripple-effect>
         </div>
 
       </div>
-
-
-
-
-
 
 
       <ion-content>
