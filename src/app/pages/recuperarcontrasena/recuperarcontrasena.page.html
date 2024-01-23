@@ -23,26 +23,26 @@
         <ion-icon name="mail-outline" slot="start"></ion-icon>
         <ion-input [(ngModel)]="correo" placeholder="Correo" color="light" clear-input></ion-input>
       </ion-item>
-      
+
       <ion-button expand="full" (click)="obtenerIdUsuario()">
         Aceptar
       </ion-button>
-      
+
     </ion-card>
 
     <ion-card *ngIf="mostrarInputRespuesta">
-      <ion-item class="centered-item" >
+      <ion-item class="centered-item">
         <ion-icon name="shield-checkmark" slot="start"></ion-icon>
         <ion-input [(ngModel)]="respuesta" type="password" placeholder="Escriba aquí su respuesta" color="light"
           clear-input></ion-input>
       </ion-item>
-      
+
       <ion-item class="centered-item" *ngIf="mostrarInputRespuesta">
         <ion-button expand="full" (click)="validarRespuesta()">
           Aceptar
         </ion-button>
       </ion-item>
-      
+
     </ion-card>
 
     <div *ngFor="let mensaje of mensajes" class="mensaje-error">
