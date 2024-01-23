@@ -15,8 +15,9 @@ import { Vehiculo } from 'src/app/services/vehiculo';
 export class ModificarperfilPage implements OnInit {
   mailRecibido: string = '';
   claveRecibido: string = '';
-  patente: string = 'aa123bb';
+  nuevaPatente: string = '';
   formularioEnviado!: boolean;
+  formularioEnviado2!: boolean;
 
   Usuario: string= '';
   nombre:string='';
@@ -26,6 +27,7 @@ export class ModificarperfilPage implements OnInit {
   usuarioalmacenado: any;
   usuarioEncontrado: Usuarios | undefined;
   usuarioEncontrado2: Vehiculo | undefined;
+  
 
   vh: any=[{
     patente:'',
@@ -140,7 +142,7 @@ export class ModificarperfilPage implements OnInit {
         {
           name: 'nuevaPatente',
           type: 'text',
-          value: this.patente, // Valor actual de la patente
+          value: this.nuevaPatente, // Valor actual de la patente
           placeholder: 'Nueva patente',
         },
       ],
@@ -156,7 +158,7 @@ export class ModificarperfilPage implements OnInit {
           text: 'Guardar',
           handler: (data) => {
             // Guardar la nueva patente y actualizar el valor en tu componente
-            this.patente = data.nuevaPatente;
+            this.nuevaPatente = data.nuevaPatente;
           },
         },
       ],
@@ -170,6 +172,12 @@ export class ModificarperfilPage implements OnInit {
     const patronPatente = /^[A-Z0-9]{3,}$/;
     
     return patronPatente.test(patente);
+}
+validarNombre(nombre: string): boolean {
+  // Aquí debes implementar la lógica para validar el nombre
+  // Puedes usar expresiones regulares u otras lógicas según tus requisitos
+  // Por ejemplo, para verificar que comience con mayúscula:
+  return /^[A-Z][a-z]*$/.test(nombre);
 }
 
 
@@ -209,6 +217,10 @@ export class ModificarperfilPage implements OnInit {
       }
     }
 
+    
+
+
+
   hayErrorescon(): boolean {
     // Aquí verifica todas las condiciones de validación y devuelve true si hay errores
     return (
@@ -240,9 +252,38 @@ export class ModificarperfilPage implements OnInit {
   }
 
   modipate(){
-    this.conexionBD.modipate(this.patente,this.usu.id_usuario);
-    //poner alerta ayuda 
-      this.presentToast;
+  
+
+    
+
+      this.formularioEnviado = true; // Marcar que se intentó enviar el formulario
+    
+      // Expresión regular para validar una patente alfanumérica, por ejemplo, "ABC123"
+      const regexPatente = /^[A-Z0-9]{3,}$/;
+    
+      if (!regexPatente.test(this.nuevaPatente)) {
+        console.error('Error: La patente debe contener al menos 3 caracteres alfanuméricos en mayúsculas.');
+      } else {
+        // Validaciones adicionales si es necesario
+    
+        if(!this.hayErroresPatente()) {
+          // Lógica para modificar los datos cuando no hay errores
+          this.conexionBD.modipate(this.nuevaPatente,this.usu.id_usuario);
+          console.log('Datos modificados');
+        }
+      }
+    }
+    
+    hayErroresPatente(): boolean {
+      // Implementa lógica para verificar errores adicionales si es necesario
+      // Devuelve true si hay errores, de lo contrario, devuelve false
+      return false; // Cambia esto según tus necesidades
+    }
+    
+    modificarPatente() {
+      // Implementa lógica para modificar los datos
+      console.log('Método modificarPatente ejecutado');
+    }
   }
 
 
@@ -250,5 +291,5 @@ export class ModificarperfilPage implements OnInit {
 
 
 
-}
+
 

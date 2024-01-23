@@ -71,7 +71,7 @@
           <div class="form-group row">
             <label for="Nombre" class="col-2">Escriba su nuevo nombre:</label>
             <div class="col-8-md">
-              <input type="text" [(ngModel)]="nombre" [ngModelOptions]="{ standalone: true }" value="{{nombreuser}}"required placeholder="{{usu.nombreuser}}">
+              <input type="text" [(ngModel)]="nombre" [ngModelOptions]="{ standalone: true }" value="{{nombre}}"required placeholder="{{usu.nombreuser}}">
             </div>
             <div *ngIf="formularioEnviado && (nombre.length < 4 || nombre.length > 12)"class="error-message" >
               El nombre debe tener entre 4 y 12 caracteres.
@@ -90,17 +90,17 @@
         <ion-card class="colorcard">
           <ion-card-content>
             <br>
-            <form (ngSubmit)="modipati()">
+            <form (ngSubmit)="modipate()">
               <div class="form-group row">
                 <label for="Patente" class="col-2">Escriba su nueva patente:</label>
                 <div class="col-8-md">
                   <input type="text" [(ngModel)]="nuevaPatente" [ngModelOptions]="{ standalone: true }"
                          required placeholder="{{ vh.patente }}">
                 </div>
-                <div *ngIf="formularioEnviado && (nuevaPatente.length < 7 || nuevaPatente.length > 9)" class="error-message">
+                <div *ngIf="formularioEnviado2 && (nuevaPatente.length < 7 || nuevaPatente.length > 9)" class="error-message">
                   La patente debe tener entre 7 y 9 caracteres.
                 </div>
-                <div *ngIf="formularioEnviado && !validarPatente(nuevaPatente)" class="error-message">
+                <div *ngIf="formularioEnviado2 && !validarPatente(nuevaPatente)" class="error-message">
                   La patente no cumple con el formato requerido.
                 </div>
               </div>
