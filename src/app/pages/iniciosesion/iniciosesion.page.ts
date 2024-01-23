@@ -25,6 +25,8 @@ export class IniciosesionPage implements OnInit {
   ngOnInit() {
   }
 
+
+
   mostrarListaUsuarios() {
     this.bd.getAllUsuarios().then((usuarios: Usuarios[]) => {
       this.usuarios = usuarios;
@@ -112,6 +114,7 @@ export class IniciosesionPage implements OnInit {
       };
       this.mostrarMensaje();
       this.router.navigate(['/perfil'], navigationExtras);
+      localStorage.setItem('usuario', JSON.stringify(this.idUserfromBD));
     } else {
       // Credenciales incorrectas
       this.mensajes.push('Usuario no encontrado');

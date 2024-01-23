@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Usuarios } from './usuarios';
 import { Comunas } from './comunas';
 import { Sedes } from './sedes';
 import { Viaje } from './viaje';
+import { Vehiculo } from './vehiculo';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +26,7 @@ export class BasededatosService {
 
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna (id_comuna INTEGER PRIMARY KEY AUTOINCREMENT, nombre_comuna VARCHAR(40));";
 
-  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario (id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, nombreuser VARCHAR(20) NOT NULL, correo VARCHAR(100) NOT NULL, clave VARCHAR(16) NOT NULL, respuesta VARCHAR(20), fk_idrol INTEGER, fk_idpregunta INTEGER, FOREIGN KEY (fk_idrol) REFERENCES rol(id_rol), FOREIGN KEY (fk_idpregunta) REFERENCES preguntas(id_pregunta));";
+  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario (id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, nombreuser VARCHAR(20) NOT NULL, correo VARCHAR(100) NOT NULL, clave VARCHAR(16) NOT NULL, respuesta VARCHAR(20), foto_usu BLOB, fk_idrol INTEGER, fk_idpregunta INTEGER, FOREIGN KEY (fk_idrol) REFERENCES rol(id_rol), FOREIGN KEY (fk_idpregunta) REFERENCES preguntas(id_pregunta));";
 
   tablaVehiculo: string = "CREATE TABLE IF NOT EXISTS vehiculo (patente VARCHAR(20) PRIMARY KEY, marca VARCHAR(50), modelo VARCHAR(20), cant_asientos INTEGER, color VARCHAR(10), fk_user INTEGER, FOREIGN KEY (fk_user) REFERENCES usuario(id_usuario));";
 
@@ -57,10 +58,13 @@ export class BasededatosService {
 
   //variables para los observables de las consultas a las tablas
   listaUser = new BehaviorSubject([]);
+  listaVehiculo = new BehaviorSubject([]);
 
-  //Observable para el estatus de la base de datos
+  //   para el estatus de la base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
+  
+  
 
   constructor(private alertController: AlertController, private plataform: Platform, private sqlite: SQLite) {
     this.crearBD();
@@ -71,6 +75,15 @@ export class BasededatosService {
     return this.isDBReady.asObservable();
   }
 
+  fetchUsuario(): Observable<Usuarios[]> {
+    return this.listaUser.asObservable();
+    
+    
+  }
+  
+  fetchVehiculo(): Observable<Vehiculo[]> {
+    return this.listaVehiculo.asObservable();
+  }
 
   //metodo para crear la base de datos
   crearBD() {
@@ -247,6 +260,7 @@ export class BasededatosService {
             fk_idpregunta: res.rows.item(0).fk_idpregunta,
             nombre_rol: res.rows.item(0).nombre_rol,
             pregunta: res.rows.item(0).pregunta,
+            foto_usu: res.rows.item(0).foto_usu,
           };
         }
 
@@ -254,6 +268,33 @@ export class BasededatosService {
       });
     });
   }
+
+
+  //BUSCAR VEHICULO(PARA CAMBIAR PATENTE)
+  buscarVehiculo(){
+    return this.conexionBD.executeSql('SELECT * FROM vehiculo ', []).then(res => {
+      //creo el arreglo para los registros
+      let items: Vehiculo[] = [];
+      //si existen filas
+      if (res.rows.length > 0) {
+        //recorro el cursor y lo agrego al arreglo
+        for (var i = 0; i < res.rows.length; i++) {
+          items.push({
+            patente: res.rows.item(i).patente,
+            marca: res.rows.item(i).marca,
+            modelo: res.rows.item(i).modelo,
+            cant_asiento: res.rows.item(i).cant_asiento,
+            color: res.rows.item(i).color,
+            fk_user: res.rows.item(i).fk_user
+          })
+        }
+        console.log(items);       
+      }
+      //actualizo el observable
+      this.listaVehiculo.next(items as any);     
+    })
+  }
+
 
 
   limpiarTablaUsuarios() {
@@ -278,11 +319,11 @@ export class BasededatosService {
   `;
 
     return this.conexionBD.executeSql(query, []).then(res => {
-      let usuarios: Usuarios[] = [];
+      let items: Usuarios[] = [];
 
       if (res.rows.length > 0) {
         for (let i = 0; i < res.rows.length; i++) {
-          usuarios.push({
+          items.push({
             id_usuario: res.rows.item(i).id_usuario,
             nombreuser: res.rows.item(i).nombreuser,
             correo: res.rows.item(i).correo,
@@ -291,11 +332,14 @@ export class BasededatosService {
             fk_idrol: res.rows.item(i).fk_idrol,
             id_rol: res.rows.item(i).id_rol,
             fk_idpregunta: res.rows.item(i).fk_idpregunta,
+            foto_usu: res.rows.item(i).foto_usu,
           });
         }
+      //actualizo el observable
+      this.listaUser.next(items as any);
       }
 
-      return usuarios;
+      return items;
     }).catch(e => {
       console.error("Error al obtener usuarios:", e);
       throw new Error("Error al obtener usuarios: " + JSON.stringify(e));
@@ -352,5 +396,24 @@ export class BasededatosService {
   }
 
 
-  //----------------------------------------------------------------------
+  //------------------------Modificar perfil----------------------------------------------
+
+
+
+  modicontusu(clave:any,id_usuario:any){
+    return this.conexionBD.executeSql('UPDATE usuario SET clave=? WHERE id_usuario=?',[clave,id_usuario]).then(res=>{
+      this.getAllUsuarios();
+    })
+  }
+  modinomusu(nombreuser:any,id_usuario:any){
+    return this.conexionBD.executeSql('UPDATE usuario SET nombreuser=? WHERE id_usuario=?',[nombreuser,id_usuario]).then(res=>{
+      this.getAllUsuarios();
+    })
+  }
+  modipate(patente:any,fk_user:any){
+    return this.conexionBD.executeSql('UPDATE vehiculo SET patente=? WHERE id_usuario=?',[patente,fk_user]).then(res=>{
+      this.buscarVehiculo();
+    })
+
+  }
 }

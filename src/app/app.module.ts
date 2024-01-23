@@ -9,13 +9,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
 import { HttpClientModule } from '@angular/common/http';
 import { ClimaService } from './services/clima.service';
+import { LocalStorageService } from './services/localstorage.service';
 
 
 
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, SQLite, Geolocation,ClimaService],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, SQLite, Geolocation,ClimaService, LocalStorageService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
