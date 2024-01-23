@@ -33,48 +33,57 @@
 
         <ion-item class="centered-item">
           <ion-icon name="map" slot="start"></ion-icon>
-          <ion-input label="Disabled input" [(ngModel)]="direcinicio" type="text" placeholder="Dirección de inicio" color="light"
+          <ion-input [(ngModel)]="direcinicio" type="text" placeholder="¿Donde se encuentra?"
+            color="light" clear-input></ion-input>
+        </ion-item>
+
+        <ion-item class="centered-item">
+          <ion-icon name="locate" slot="start"></ion-icon>
+          <ion-input [(ngModel)]="direcdestino" type="text" placeholder="¿Hacia donde se dirige?" color="light"
             clear-input></ion-input>
         </ion-item>
 
-
-
         <ion-item class="centered-item">
-          <ion-item class="centered-item">
-            <ion-icon name="globe" slot="start"></ion-icon>
-            <ion-label>Comuna:</ion-label>
-            <ion-select [(ngModel)]="direcinicio" placeholder="Selecciona una comuna">
-              <ion-select-option *ngFor="let comuna of comunas" [value]="comuna.nombre_comuna">
-                {{ comuna.nombre_comuna }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
+          <ion-icon name="business" slot="start"></ion-icon>
+          <ion-label>Sede:</ion-label>
 
-          <ion-item class="centered-item">
-            <ion-icon name="business" slot="start"></ion-icon>
-            <ion-label>Sede:</ion-label>
-            <ion-select [(ngModel)]="direcinicio" placeholder="Selecciona una sede">
-              <ion-select-option *ngFor="let sede of sedes" [value]="sede.nombre_sede">
-                {{ sede.nombre_sede }}
-              </ion-select-option>
-            </ion-select>
-          </ion-item>
-
+          <ion-button fill="clear" (click)="mostrarListaSedes()">
+            <ion-icon name="chevron-down-outline"></ion-icon>
+          </ion-button>
         </ion-item>
 
-
+        <ion-list *ngIf="mostrarSedes">
+          <ion-item *ngFor="let sede of sedes">
+            <ion-label placeholder="Sedes disponibles">{{ sede.nombre_sede }}</ion-label>
+            <ion-note slot="end">
+              <!-- Puedes agregar cualquier información adicional aquí, si es necesario -->
+            </ion-note>
+          </ion-item>
+        </ion-list>
 
         <ion-item class="centered-item">
-          <ion-icon name="map" slot="start"></ion-icon>
-          <ion-input [(ngModel)]="direcdestino" type="text" placeholder="Dirección de destino" color="light"
-            clear-input></ion-input>
+          <ion-icon name="globe" slot="start"></ion-icon>
+          <ion-label>Comuna:</ion-label>
+
+          <ion-button fill="clear" (click)="mostrarListaComunas()">
+            <ion-icon name="chevron-down-outline"></ion-icon>
+          </ion-button>
         </ion-item>
+
+        <ion-list *ngIf="mostrarComunas">
+          <ion-item *ngFor="let comuna of comunas">
+            <ion-label placeholder="Comunas disponibles"> {{ comuna.nombre_comuna }}</ion-label>
+            <ion-note slot="end">
+              <!-- Puedes agregar cualquier información adicional aquí, si es necesario -->
+            </ion-note>
+          </ion-item>
+        </ion-list>
+
 
         <ion-item class="centered-item">
           <ion-icon name="cash" slot="start"></ion-icon>
           <ion-label>Precio:</ion-label>
-          <ion-input [(ngModel)]="precio" maxlength="5" type="text" placeholder="Precio" color="light" clear-input
-            (ionBlur)="precio = formatPrecio(precio.toString())"></ion-input>
+          <ion-input [(ngModel)]="precio" minlength="4" maxlength="4" type="number" placeholder="Precio" color="light"></ion-input>
         </ion-item>
 
 
@@ -92,5 +101,6 @@
         <ion-ripple-effect></ion-ripple-effect>
       </div>
     </div>
+
   </div>
 </ion-content>

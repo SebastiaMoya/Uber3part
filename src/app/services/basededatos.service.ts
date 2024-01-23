@@ -30,7 +30,7 @@ export class BasededatosService {
 
   tablaVehiculo: string = "CREATE TABLE IF NOT EXISTS vehiculo (patente VARCHAR(20) PRIMARY KEY, marca VARCHAR(50), modelo VARCHAR(20), cant_asientos INTEGER, color VARCHAR(10), fk_user INTEGER, FOREIGN KEY (fk_user) REFERENCES usuario(id_usuario));";
 
-  tablaViaje: string = "CREATE TABLE IF NOT EXISTS viaje (id_viaje INTEGER PRIMARY KEY AUTOINCREMENT, horasalida VARCHAR(5) NOT NULL, asientos_disponibles INTEGER, precio INTEGER, direcinicio VARCHAR(70), direcdestino VARCHAR(70),fk_patente VARCHAR(20), FOREIGN KEY (fk_patente) REFERENCES vehiculo(patente));";
+  tablaViaje: string = "CREATE TABLE IF NOT EXISTS viaje (id_viaje INTEGER PRIMARY KEY AUTOINCREMENT, horasalida VARCHAR(5) NOT NULL, asientos_disponibles INTEGER, precio INTEGER, direcinicio VARCHAR(70), direcdestino VARCHAR(70), fk_patente VARCHAR(20), FOREIGN KEY (fk_patente) REFERENCES vehiculo(patente));";
 
   tablaDetalle: string = "CREATE TABLE IF NOT EXISTS detalleviaje (id_detalle INTEGER PRIMARY KEY AUTOINCREMENT, fk_viaje INTEGER, fk_user INTEGER, FOREIGN KEY (fk_viaje) REFERENCES viaje(id_viaje), FOREIGN KEY (fk_user) REFERENCES usuario(id_usuario));";
 
@@ -55,6 +55,9 @@ export class BasededatosService {
 
   insertVehiculo1: string = "INSERT or IGNORE INTO vehiculo(patente,marca,modelo,cant_asientos,color,fk_user) VALUES ('bb456cc','Chevrolet','Chevrolet Beat', 7, 'verde', 2);";
 
+  insertViaje1: string = "INSERT or IGNORE INTO viaje (id_viaje,horasalida,asientos_disponibles,precio,direcinicio,direcdestino,fk_patente) VALUES ('1','12:30', 5, 1.000, 'Plaza norte', 'La florida', 'bb456cc');";
+
+  BorrarTablaViaje: string = "DROP TABLE IF EXISTS viaje";
 
   //variables para los observables de las consultas a las tablas
   listaUser = new BehaviorSubject([]);
@@ -131,51 +134,54 @@ export class BasededatosService {
     try {
       //ejecutar creacion de tablas
       await this.conexionBD.executeSql(this.tablaRol, []);
-      //this.presentAlert("1");
+      // this.presentAlert("1");
       await this.conexionBD.executeSql(this.tablaPregunta, []);
-      //this.presentAlert("1");
+      // this.presentAlert("2");
       await this.conexionBD.executeSql(this.tablaComuna, []);
-      //this.presentAlert("2");
+      // this.presentAlert("3");
       await this.conexionBD.executeSql(this.tablaSede, []);
-      //this.presentAlert("3");
+      // this.presentAlert("4");
       await this.conexionBD.executeSql(this.tablaUsuario, []);
-      //this.presentAlert("5");
+      // this.presentAlert("5");
       await this.conexionBD.executeSql(this.tablaVehiculo, []);
-      //this.presentAlert("6");
+      // this.presentAlert("6");
+      // this.presentAlert("7");
       await this.conexionBD.executeSql(this.tablaViaje, []);
-      //this.presentAlert("7");
+      // this.presentAlert("8");
       await this.conexionBD.executeSql(this.tablaDetalle, []);
-      //this.presentAlert("8");
+      //this.presentAlert("9");
       //ejecuto los insert en las tablas
       await this.conexionBD.executeSql(this.insertRol1, []);
-      //this.presentAlert("9");
+      // this.presentAlert("10");
       await this.conexionBD.executeSql(this.insertRol2, []);
-      //this.presentAlert("10");
+      // this.presentAlert("11");
       await this.conexionBD.executeSql(this.insertpregunta1, []);
-      //this.presentAlert("11");
+      // this.presentAlert("12");
       await this.conexionBD.executeSql(this.insertpregunta2, []);
-      //this.presentAlert("12");
+      // this.presentAlert("13");
       await this.conexionBD.executeSql(this.insertcomuna1, []);
-      //this.presentAlert("13");
+      // this.presentAlert("14");
       await this.conexionBD.executeSql(this.insertcomuna2, []);
-      //this.presentAlert("14");
+      // this.presentAlert("15");
       await this.conexionBD.executeSql(this.insertsede1, []);
-      //this.presentAlert("15");
+      // this.presentAlert("16");
       await this.conexionBD.executeSql(this.insertsede2, []);
-      //this.presentAlert("15");
+      // this.presentAlert("17");
       await this.conexionBD.executeSql(this.insertsede3, []);
-      //this.presentAlert("15");
+      // this.presentAlert("18");
       await this.conexionBD.executeSql(this.insertsede4, []);
-      //this.presentAlert("16");
-      //this.buscarUsuarios();
+      // this.presentAlert("19");
       await this.conexionBD.executeSql(this.insertUsuario1, []);
-      //this.presentAlert("11");
+      // this.presentAlert("20");
       await this.conexionBD.executeSql(this.insertUsuario2, []);
-      //this.presentAlert("12");
+      // this.presentAlert("21");
       await this.conexionBD.executeSql(this.insertVehiculo1, []);
+      // this.presentAlert("22");
+      await this.conexionBD.executeSql(this.insertViaje1, []);
+      // this.presentAlert("23");
       //actualizo el observable de la base de datos
       this.isDBReady.next(true);
-      //this.presentAlert("Proceso completado");
+      // this.presentAlert("Proceso completado");
     }
     catch (e) {
       this.presentAlert("Error en tablas: " + JSON.stringify(e));
@@ -183,8 +189,19 @@ export class BasededatosService {
 
   }
 
+  async borrarTablaViaje(): Promise<void> {
+    const query = 'DROP TABLE IF EXISTS viaje';
+    try {
+      await this.conexionBD.executeSql(query, []);
+      console.log('Tabla viaje borrada correctamente');
+    } catch (error) {
+      console.error('Error al borrar la tabla viaje:', error);
+      throw new Error('Error al borrar la tabla viaje: ' + JSON.stringify(error));
+    }
+  }
+
   // Función para verificar si el correo ya existe
-  verificarCorreoExistente(correo: string): Promise<boolean> {
+  async verificarCorreoExistente(correo: string): Promise<boolean> {
     const verificarCorreoQuery = 'SELECT COUNT(*) AS cantidad FROM usuario WHERE correo = ?';
     const parametrosCorreo = [correo];
 
@@ -202,7 +219,7 @@ export class BasededatosService {
 
 
 
-  insertarUsuario(nombre: string, correo: string, clave: string, respuesta: string, fk_idrol: number, fk_idpregunta: number): Promise<number> {
+  async insertarUsuario(nombre: string, correo: string, clave: string, respuesta: string, fk_idrol: number, fk_idpregunta: number): Promise<number> {
     return this.conexionBD.executeSql('INSERT INTO usuario(nombreuser, correo, clave, respuesta, fk_idrol, fk_idpregunta) VALUES (?, ?, ?, ?, ?, ?)',
       [nombre, correo, clave, respuesta, fk_idrol, fk_idpregunta]).then(res => {
         // Obtener el ID del último rol insertado
@@ -214,7 +231,7 @@ export class BasededatosService {
   }
 
 
-  buscarUsuarioId(correo: string, clave: string): Promise<number | null> {
+  async buscarUsuarioId(correo: string, clave: string): Promise<number | null> {
     return this.conexionBD.executeSql('SELECT id_usuario FROM usuario WHERE correo = ? AND clave = ?', [correo, clave])
       .then(res => {
         if (res.rows.length > 0) {
@@ -235,7 +252,7 @@ export class BasededatosService {
 
 
 
-  obtenerDatosUsuario(idUsuario: number): Promise<any> {
+  async obtenerDatosUsuario(idUsuario: number): Promise<any> {
     const query = `
       SELECT usuario.*, rol.nombre_rol, pregunta.pregunta
       FROM usuario
@@ -268,9 +285,6 @@ export class BasededatosService {
       });
     });
   }
-
-
-  //BUSCAR VEHICULO(PARA CAMBIAR PATENTE)
   buscarVehiculo(){
     return this.conexionBD.executeSql('SELECT * FROM vehiculo ', []).then(res => {
       //creo el arreglo para los registros
@@ -297,7 +311,8 @@ export class BasededatosService {
 
 
 
-  limpiarTablaUsuarios() {
+  async limpiarTablaUsuarios() {
+
     return this.conexionBD.executeSql('DELETE FROM usuario', [])
       .then(() => {
         console.log('Registros de la tabla de usuarios eliminados exitosamente');
@@ -310,7 +325,7 @@ export class BasededatosService {
 
   // En basededatos.service.ts
 
-  getAllUsuarios(): Promise<Usuarios[]> {
+  async getAllUsuarios(): Promise<Usuarios[]> {
     const query = `
     SELECT usuario.*, rol.nombre_rol, pregunta.pregunta
     FROM usuario
@@ -350,10 +365,10 @@ export class BasededatosService {
   //-------------------------------Viajes---------------------------------
   //----------------------------------------------------------------------
 
-  insertarViaje(horasalida: string, asientos_disponibles: number, precio: number, direcinicio: string, direcdestino: string, fk_patente: string): Promise<void> {
+  async insertarViaje(horasalida: string, asientos_disponibles: number, precio: number, direcinicio: string, direcdestino: string, fk_patente: string): Promise<void> {
     const query = 'INSERT INTO viaje (horasalida, asientos_disponibles, precio, direcinicio, direcdestino, fk_patente) VALUES (?, ?, ?, ?, ?, ?)';
     const values = [horasalida, asientos_disponibles, precio, direcinicio, direcdestino, fk_patente];
-  
+
     return this.conexionBD.executeSql(query, values)
       .then(() => {
         console.log('Viaje insertado correctamente');
@@ -363,9 +378,36 @@ export class BasededatosService {
         throw new Error('Error al insertar el viaje: ' + JSON.stringify(error));
       });
   }
+
+  async obtenerViajes(): Promise<Viaje[]> {
+    const query = 'SELECT * FROM viaje';
+  
+    return this.conexionBD.executeSql(query, [])
+      .then((resultado) => {
+        const viajes: Viaje[] = [];
+        for (let i = 0; i < resultado.rows.length; i++) {
+          const item = resultado.rows.item(i);
+          const viaje: Viaje = {
+            id_viaje: item.id_viaje,
+            horasalida: item.horasalida,
+            asientos_disponibles: item.asientos_disponibles,
+            precio: item.precio,
+            direcinicio: item.direcinicio,
+            direcdestino: item.direcdestino,
+            fk_patente: item.fk_patente
+          };
+          viajes.push(viaje);
+        }
+        return viajes;
+      })
+      .catch(error => {
+        console.error('Error al obtener todos los viajes:', error);
+        throw new Error('Error al obtener todos los viajes: ' + JSON.stringify(error));
+      });
+  }
   
 
-  obtenerComunas(): Promise<Comunas[]> {
+  async obtenerComunas(): Promise<Comunas[]> {
     return this.conexionBD.executeSql('SELECT * FROM comuna', [])
       .then(res => {
         const comunas: Comunas[] = [];
@@ -380,7 +422,7 @@ export class BasededatosService {
       });
   }
 
-  obtenerSedes(): Promise<Sedes[]> {
+  async obtenerSedes(): Promise<Sedes[]> {
     return this.conexionBD.executeSql('SELECT * FROM sede', [])
       .then(res => {
         const sedes: Sedes[] = [];
