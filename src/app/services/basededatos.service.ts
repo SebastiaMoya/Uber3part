@@ -26,7 +26,7 @@ export class BasededatosService {
 
   tablaComuna: string = "CREATE TABLE IF NOT EXISTS comuna (id_comuna INTEGER PRIMARY KEY AUTOINCREMENT, nombre_comuna VARCHAR(40));";
 
-  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario (id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, nombreuser VARCHAR(20) NOT NULL, correo VARCHAR(100) NOT NULL, clave VARCHAR(16) NOT NULL, respuesta VARCHAR(20), foto_usu BLOB, fk_idrol INTEGER, fk_idpregunta INTEGER, FOREIGN KEY (fk_idrol) REFERENCES rol(id_rol), FOREIGN KEY (fk_idpregunta) REFERENCES preguntas(id_pregunta));";
+  tablaUsuario: string = "CREATE TABLE IF NOT EXISTS usuario (id_usuario INTEGER PRIMARY KEY AUTOINCREMENT, nombreuser VARCHAR(20) NOT NULL, correo VARCHAR(100) NOT NULL, clave VARCHAR(16) NOT NULL, respuesta VARCHAR(20) NOT NULL, foto_usu BLOB, fk_idrol INTEGER, fk_idpregunta INTEGER, FOREIGN KEY (fk_idrol) REFERENCES rol(id_rol), FOREIGN KEY (fk_idpregunta) REFERENCES preguntas(id_pregunta));";
 
   tablaVehiculo: string = "CREATE TABLE IF NOT EXISTS vehiculo (patente VARCHAR(20) PRIMARY KEY, marca VARCHAR(50), modelo VARCHAR(20), cant_asientos INTEGER, color VARCHAR(10), fk_user INTEGER, FOREIGN KEY (fk_user) REFERENCES usuario(id_usuario));";
 
@@ -66,8 +66,8 @@ export class BasededatosService {
   //   para el estatus de la base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  
-  
+
+
 
   constructor(private alertController: AlertController, private plataform: Platform, private sqlite: SQLite) {
     this.crearBD();
@@ -80,10 +80,10 @@ export class BasededatosService {
 
   fetchUsuario(): Observable<Usuarios[]> {
     return this.listaUser.asObservable();
-    
-    
+
+
   }
-  
+
   fetchVehiculo(): Observable<Vehiculo[]> {
     return this.listaVehiculo.asObservable();
   }
@@ -250,7 +250,69 @@ export class BasededatosService {
       });
   }
 
+  // En tu servicio
+async buscarUsuarioIdporCorreo(correo: string): Promise<number | null> {
+  const query = 'SELECT id_usuario FROM usuario WHERE correo = ?';
+  const parametros = [correo];
 
+  return this.conexionBD.executeSql(query, parametros)
+    .then(res => {
+      if (res.rows.length > 0) {
+        const idUsuario = res.rows.item(0).id_usuario;
+        return idUsuario;
+      } else {
+        return null;
+      }
+    })
+    .catch(e => {
+      console.error('Error al obtener el ID de usuario:', e);
+      throw e;
+    });
+}
+
+// Función para obtener la respuesta del usuario por su ID
+async obtenerRespuestaUsuario(idUsuario: number): Promise<string | null> {
+  const query = 'SELECT respuesta FROM usuario WHERE id_usuario = ?';
+  
+  try {
+    const resultado = await this.conexionBD.executeSql(query, [idUsuario]);
+
+    if (resultado.rows.length > 0) {
+      // Devolvemos la respuesta si se encontró
+      return resultado.rows.item(0).respuesta;
+    } else {
+      // No se encontró una respuesta para el usuario
+      return null;
+    }
+  } catch (error) {
+    console.error('Error al obtener la respuesta del usuario:', error);
+    throw new Error('Error al obtener la respuesta del usuario: ' + JSON.stringify(error));
+  }
+}
+
+// En tu servicio
+async validarRespuesta(idUsuario: number, respuesta: string): Promise<boolean> {
+  if (idUsuario === null) {
+    return false; // Usuario no encontrado
+  }
+
+  const query = 'SELECT respuesta FROM usuario WHERE id_usuario = ?';
+  const parametros = [idUsuario];
+
+  return this.conexionBD.executeSql(query, parametros)
+    .then(res => {
+      if (res.rows.length > 0) {
+        const respuestaBD = res.rows.item(0).respuesta;
+        return respuesta === respuestaBD;
+      } else {
+        return false; // No se encontró la respuesta para el usuario
+      }
+    })
+    .catch(e => {
+      console.error('Error al validar la respuesta:', e);
+      throw e;
+    });
+}
 
   async obtenerDatosUsuario(idUsuario: number): Promise<any> {
     const query = `
@@ -285,7 +347,7 @@ export class BasededatosService {
       });
     });
   }
-  buscarVehiculo(){
+  buscarVehiculo() {
     return this.conexionBD.executeSql('SELECT * FROM vehiculo ', []).then(res => {
       //creo el arreglo para los registros
       let items: Vehiculo[] = [];
@@ -302,10 +364,10 @@ export class BasededatosService {
             fk_user: res.rows.item(i).fk_user
           })
         }
-        console.log(items);       
+        console.log(items);
       }
       //actualizo el observable
-      this.listaVehiculo.next(items as any);     
+      this.listaVehiculo.next(items as any);
     })
   }
 
@@ -350,8 +412,8 @@ export class BasededatosService {
             foto_usu: res.rows.item(i).foto_usu,
           });
         }
-      //actualizo el observable
-      this.listaUser.next(items as any);
+        //actualizo el observable
+        this.listaUser.next(items as any);
       }
 
       return items;
@@ -381,7 +443,7 @@ export class BasededatosService {
 
   async obtenerViajes(): Promise<Viaje[]> {
     const query = 'SELECT * FROM viaje';
-  
+
     return this.conexionBD.executeSql(query, [])
       .then((resultado) => {
         const viajes: Viaje[] = [];
@@ -405,7 +467,7 @@ export class BasededatosService {
         throw new Error('Error al obtener todos los viajes: ' + JSON.stringify(error));
       });
   }
-  
+
 
   async obtenerComunas(): Promise<Comunas[]> {
     return this.conexionBD.executeSql('SELECT * FROM comuna', [])
@@ -442,18 +504,18 @@ export class BasededatosService {
 
 
 
-  modicontusu(clave:any,id_usuario:any){
-    return this.conexionBD.executeSql('UPDATE usuario SET clave=? WHERE id_usuario=?',[clave,id_usuario]).then(res=>{
+  modicontusu(clave: any, id_usuario: any) {
+    return this.conexionBD.executeSql('UPDATE usuario SET clave=? WHERE id_usuario=?', [clave, id_usuario]).then(res => {
       this.getAllUsuarios();
     })
   }
-  modinomusu(nombreuser:any,id_usuario:any){
-    return this.conexionBD.executeSql('UPDATE usuario SET nombreuser=? WHERE id_usuario=?',[nombreuser,id_usuario]).then(res=>{
+  modinomusu(nombreuser: any, id_usuario: any) {
+    return this.conexionBD.executeSql('UPDATE usuario SET nombreuser=? WHERE id_usuario=?', [nombreuser, id_usuario]).then(res => {
       this.getAllUsuarios();
     })
   }
-  modipate(patente:any,fk_user:any){
-    return this.conexionBD.executeSql('UPDATE vehiculo SET patente=? WHERE id_usuario=?',[patente,fk_user]).then(res=>{
+  modipate(patente: any, fk_user: any) {
+    return this.conexionBD.executeSql('UPDATE vehiculo SET patente=? WHERE id_usuario=?', [patente, fk_user]).then(res => {
       this.buscarVehiculo();
     })
   }
