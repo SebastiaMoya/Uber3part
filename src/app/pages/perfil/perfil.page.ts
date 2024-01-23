@@ -17,38 +17,103 @@ export class PerfilPage implements OnInit {
   idRolUsuario: number = 0;
   idUsuarioRecibido: number = 0; // Declarar la variable idRolUsuario
   datosUsuario: any = null;  // Cambiado a una única variable
+  usuarioEncontrado2: any;
+  usuarioEncontrado: any;
+  usuarioalmacenado: any;
+  vh: any=[{
+    patente:'',
+    marca: '',
+    modelo:'',
+    cant_asiento: '',
+    color: '',
+    fk_user: ''
+  }];
+
+  usu: any=[{
+    id_usuario: '',
+    nombreuser: '',
+    correo: '',
+    clave: '',
+    respuesta: '',
+    fk_idrol: '',
+    id_rol: '',
+    fk_idpregunta :'',
+    foto_usu: ''
+  }];
 
   constructor(private router: Router,
     private activeRouter: ActivatedRoute,
     private alertController: AlertController,
     private toastController: ToastController,
-    private bd: BasededatosService) { }
+    private conexionBD: BasededatosService) { }
 
 
-  ngOnInit() {
-    this.activeRouter.queryParams.subscribe(param => {
-      if (this.router.getCurrentNavigation()?.extras.state) {
-        this.idUsuarioRecibido = this.router.getCurrentNavigation()?.extras?.state?.['IdUserToPerfil'];
+   ngOnInit() {
+    const usuarioAlmacenadoString = localStorage.getItem('usuario');
+
+    if (usuarioAlmacenadoString) {
+      try {
+        this.usuarioalmacenado = JSON.parse(usuarioAlmacenadoString);
+      } catch (error) {
+        console.error('Error al analizar el valor del usuario en el localStorage:', error);
       }
-    });
 
-    this.obtenerDatosUsuario();
+      if (this.usuarioalmacenado) {
+        this.conexionBD.dbState().subscribe((res) => {
+          if (res) {
+            this.conexionBD.fetchUsuario().subscribe((items) => {
+              if (items && items.length > 0) {
+                this.usuarioEncontrado = items.find((usu) => this.usu.id_usuario === this.usuarioalmacenado.id_usuario);
 
-  }
-
-  obtenerDatosUsuario() {
-    if (this.idUsuarioRecibido) {
-      this.bd.obtenerDatosUsuario(this.idUsuarioRecibido)
-        .then((usuario) => {
-          if (usuario) {
-            this.datosUsuario = usuario;
+                if (this.usuarioEncontrado) {
+                  this.usu = this.usuarioEncontrado;
+                  console.log('Usuario encontrado:', this.usu);
+                } else {
+                  console.log('Usuario no encontrado en la base de datos.');
+                }
+              }
+            });
           }
-        })
-        .catch(error => {
-          console.error('Error al obtener datos del usuario:', error);
         });
+      }
+    } else {
+      console.log('No se encontró un usuario en el almacenamiento local.');
+    }
+    
+    if (usuarioAlmacenadoString) {
+      try {
+        this.usuarioalmacenado = JSON.parse(usuarioAlmacenadoString);
+      } catch (error) {
+        console.error('Error al analizar el valor del usuario en el localStorage:', error);
+      }
+
+      if (this.usuarioalmacenado) {
+        this.conexionBD.dbState().subscribe((res) => {
+          if (res) {
+            this.conexionBD.fetchVehiculo().subscribe((items) => {
+              if (items && items.length > 0) {
+                this.usuarioEncontrado2 = items.find((vh) => this.vh.fk_user === this.usuarioalmacenado.id_usuario);
+
+                if (this.usuarioEncontrado) {
+                  this.usu = this.usuarioEncontrado;
+                  console.log('Usuario encontrado:', this.vh);
+                } else {
+                  console.log('Usuario no encontrado en la base de datos.');
+                }
+              }
+            });
+          }
+        });
+      }
+    } else {
+      console.log('No se encontró un usuario en el almacenamiento local.');
     }
   }
+  
+
+    
+
+  
 
   async mostrarMensaje() {
     const alert = await this.alertController.create({

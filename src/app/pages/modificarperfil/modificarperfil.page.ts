@@ -27,6 +27,9 @@ export class ModificarperfilPage implements OnInit {
   usuarioalmacenado: any;
   usuarioEncontrado: Usuarios | undefined;
   usuarioEncontrado2: Vehiculo | undefined;
+
+
+  
   
 
   vh: any=[{
@@ -39,7 +42,7 @@ export class ModificarperfilPage implements OnInit {
   }];
 
 
-
+ 
   usu: any=[{
     id_usuario: '',
     nombreuser: '',

@@ -3,14 +3,10 @@
 
     <app-comp1></app-comp1>
 
-    <!----Conductor-->
-
-    <ion-card *ngIf="datosUsuario.fk_idrol === 2">
-
+    <!-- Conductor -->
       <ion-card-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <!-- Cambié el slot de "end" a "start" y el icono a log-out -->
             <ion-button fill="clear" (click)="cerrarSesion()" class="back-button">
               <ion-icon name="log-out"></ion-icon>
             </ion-button>
@@ -18,35 +14,33 @@
               <ion-icon name="settings"></ion-icon>
             </ion-button>
           </ion-buttons>
-
-          <!-- Añadí una clase para centrar el texto -->
           <ion-card-title class="centered-title" color="light">Perfil</ion-card-title>
         </ion-toolbar>
       </ion-card-header>
 
-
-
       <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
 
-      <ion-card-content class="centered-content">
+      <ion-card-content *ngIf="usu.id_rol !== 1" class="centered-content">
+        Bienvenido señor conductor
         <ion-item class="centered-item">
           <ion-row>
             <ion-col size="12" class="icon-col">
               <ion-icon name="car"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              <p>{{ datosUsuario.nombre_rol }}</p>
+              <p>{{ usu.id_rol }}</p>
             </ion-col>
           </ion-row>
         </ion-item>
+      </ion-card-content>
+      
 
         <ion-item class="centered-item">
           <ion-row>
             <ion-col size="12">
-              <p> {{ patente | uppercase }} </p>
+              <p>{{ vh.patente }}</p>
             </ion-col>
             <ion-col size="7">
-              <!-- Agregué un ion-icon para editar -->
               <ion-icon name="create" (click)="editarPatente()" class="edit-icon"></ion-icon>
             </ion-col>
           </ion-row>
@@ -58,7 +52,7 @@
               <ion-icon name="person"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              {{ datosUsuario.nombreuser }}
+              {{ usu.correo }}
             </ion-col>
           </ion-row>
         </ion-item>
@@ -69,12 +63,11 @@
               <ion-icon name="mail"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              {{ datosUsuario.correo }}
+              {{ usu.correo }}
             </ion-col>
           </ion-row>
         </ion-item>
-      </ion-card-content>
-
+      
 
       <div class="wrapper">
         <div id="present-alert" class="ion-activatable ripple-parent custom-parent" [routerLink]="'/publicarviaje'">
@@ -82,18 +75,15 @@
           <ion-ripple-effect></ion-ripple-effect>
         </div>
       </div>
+    
 
-
-    </ion-card>
-
-    <!----Pasajero-->
-
-    <ion-card *ngIf="datosUsuario.fk_idrol === 1">
+    <!-- Pasajero -->
+    <ion-card-content *ngIf="usu.id_rol !== 2" class="centered-content">
+      Bienvenido señor pasajero
 
       <ion-card-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <!-- Cambié el slot de "end" a "start" y el icono a log-out -->
             <ion-button fill="clear" (click)="cerrarSesion()" class="back-button">
               <ion-icon name="log-out"></ion-icon>
             </ion-button>
@@ -101,10 +91,11 @@
               <ion-icon name="settings"></ion-icon>
             </ion-button>
           </ion-buttons>
-          <!-- Añadí una clase para centrar el texto -->
           <ion-card-title class="centered-title" color="light">Perfil</ion-card-title>
         </ion-toolbar>
       </ion-card-header>
+
+      
 
       <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/card-media.png" />
 
@@ -115,10 +106,11 @@
               <ion-icon name="walk"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              <p>{{ datosUsuario.nombre_rol }}</p>
+              <p>{{ usu.id_rol }}</p>
             </ion-col>
           </ion-row>
         </ion-item>
+        </ion-card-content>
 
         <ion-item class="centered-item">
           <ion-row>
@@ -126,7 +118,7 @@
               <ion-icon name="person"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              {{ datosUsuario.nombreuser }}
+              {{ vh.patente }}
             </ion-col>
           </ion-row>
         </ion-item>
@@ -137,23 +129,19 @@
               <ion-icon name="mail"></ion-icon>
             </ion-col>
             <ion-col size="12">
-              {{ datosUsuario.correo }}
+              {{ usu.correo }}
             </ion-col>
           </ion-row>
         </ion-item>
-      </ion-card-content>
+      
 
       <div class="wrapper">
-
         <div [routerLink]="'/buscarviaje'" class="ion-activatable ripple-parent custom-parent">
           Buscar Viaje
           <ion-ripple-effect></ion-ripple-effect>
         </div>
-
       </div>
+    
 
-    </ion-card>
+    <
 
-  </div> 
-  
-</ion-content>

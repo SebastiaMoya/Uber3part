@@ -456,6 +456,6 @@ export class BasededatosService {
     return this.conexionBD.executeSql('UPDATE vehiculo SET patente=? WHERE id_usuario=?',[patente,fk_user]).then(res=>{
       this.buscarVehiculo();
     })
-
   }
+
 }
