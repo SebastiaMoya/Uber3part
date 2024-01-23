@@ -37,7 +37,7 @@ export class IniciosesionPage implements OnInit {
   async mostrarMensaje() {
     const alert = await this.alertController.create({
       header: 'Te damos la bienvenida',
-      message: 'Usuario iniciado exitosamente: ',
+      message: 'Usuario iniciado exitosamente',
       buttons: [
         {
           text: 'OK',

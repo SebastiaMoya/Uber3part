@@ -33,8 +33,8 @@
 
         <ion-item class="centered-item">
           <ion-icon name="map" slot="start"></ion-icon>
-          <ion-input [(ngModel)]="direcinicio" type="text" placeholder="¿Donde se encuentra?"
-            color="light" clear-input></ion-input>
+          <ion-input [(ngModel)]="direcinicio" type="text" placeholder="¿Donde se encuentra?" color="light"
+            clear-input></ion-input>
         </ion-item>
 
         <ion-item class="centered-item">
@@ -48,6 +48,7 @@
           <ion-label>Sede:</ion-label>
 
           <ion-button fill="clear" (click)="mostrarListaSedes()">
+            <p>Sedes disponibles:</p>
             <ion-icon name="chevron-down-outline"></ion-icon>
           </ion-button>
         </ion-item>
@@ -63,9 +64,10 @@
 
         <ion-item class="centered-item">
           <ion-icon name="globe" slot="start"></ion-icon>
-          <ion-label>Comuna:</ion-label>
+          <ion-label>Comuna disponibles:</ion-label>
 
           <ion-button fill="clear" (click)="mostrarListaComunas()">
+            <p>Comuna disponibles:</p>
             <ion-icon name="chevron-down-outline"></ion-icon>
           </ion-button>
         </ion-item>
@@ -83,7 +85,8 @@
         <ion-item class="centered-item">
           <ion-icon name="cash" slot="start"></ion-icon>
           <ion-label>Precio:</ion-label>
-          <ion-input [(ngModel)]="precio" minlength="4" maxlength="4" type="number" placeholder="Precio" color="light"></ion-input>
+          <ion-input [(ngModel)]="precio" maxlength="4" type="number" placeholder="Precio"
+            color="light"></ion-input>
         </ion-item>
 
 

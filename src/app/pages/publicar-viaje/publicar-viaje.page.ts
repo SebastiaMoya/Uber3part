@@ -61,12 +61,21 @@ export class PublicarViajePage implements OnInit {
 
     // Verifica si la dirección de salida coincide con algún nombre de comuna o sede
     const direccionValida = nombresComunasYSedes.some(nombre => this.direcinicio.toLowerCase().includes(nombre));
+    // Verifica si la dirección de destino coincide con algún nombre de comuna o sede
+    const direccionValida2 = nombresComunasYSedes.some(nombre => this.direcdestino.toLowerCase().includes(nombre));
 
     if (direccionValida) {
-      console.log('La dirección es válida.');
+      console.log('La dirección de salida es válida.');
     } else {
-      console.log('La dirección no coincide con ninguna comuna o sede.');
+      console.log('La dirección de salida no coincide con ninguna comuna o sede.');
     }
+
+    if (direccionValida2) {
+      console.log('La dirección de destino es válida.');
+    } else {
+      console.log('La dirección de destino no coincide con ninguna comuna o sede.');
+    }
+
   }
 
   validateHoraSalida(): boolean {
@@ -80,13 +89,11 @@ export class PublicarViajePage implements OnInit {
     return regexPatente.test(this.fk_patente);
   }
 
-
   validatePrecio(precioString: string): boolean {
     const regexPrecio = /^[1-9]\d*(\.\d{1,3})?$/;
     return regexPrecio.test(precioString);
   }
   
-
 
   limitarCaracteres(event: any, maxLength: number): void {
     const input = event.target as HTMLInputElement;
@@ -98,6 +105,13 @@ export class PublicarViajePage implements OnInit {
   validarDireccionInicio(direccion: string): boolean {
     const comunaCoincide = this.comunas.some(comuna => direccion.toLowerCase().includes(comuna.nombre_comuna.toLowerCase()));
     const sedeCoincide = this.sedes.some(sede => direccion.toLowerCase().includes(sede.nombre_sede.toLowerCase()));
+
+    return comunaCoincide || sedeCoincide;
+  }
+
+  validarDireccionDestino(direccionDestino: string): boolean {
+    const comunaCoincide = this.comunas.some(comuna => direccionDestino.toLowerCase().includes(comuna.nombre_comuna.toLowerCase()));
+    const sedeCoincide = this.sedes.some(sede => direccionDestino.toLowerCase().includes(sede.nombre_sede.toLowerCase()));
 
     return comunaCoincide || sedeCoincide;
   }
@@ -131,14 +145,17 @@ export class PublicarViajePage implements OnInit {
       return;
     }
 
+    // Validar dirección de inicio
+    if (!this.validarDireccionDestino(this.direcdestino)) {
+      this.mensajes.push('La dirección de inicio no coincide con ninguna comuna o sede.');
+      return;
+    }
+
     // Validar formato del precio
     if (!this.validatePrecio(this.precio.toString())) {
       this.mensajes.push('Formato de precio incorrecto. Utiliza el formato correcto.');
       return;
     }
-
-    // Antes de la llamada a la función de inserción
-    this.mensajes.push('Valores del formulario:', this.horasalida, this.asientos_disponibles, this.precio, this.direcinicio, this.direcdestino, this.fk_patente);
 
     // Realizar la inserción en la base de datos
     this.bd.insertarViaje(
@@ -164,22 +181,34 @@ export class PublicarViajePage implements OnInit {
 
 
   async MsjRegistro() {
+    const mensaje = `
+      -Viaje publicado:
+      -Hora de salida: ${this.horasalida}
+      -Asientos disponibles: ${this.asientos_disponibles}
+      -Precio: ${this.precio}
+      -Dirección de inicio: ${this.direcinicio}
+      -Dirección de destino: ${this.direcdestino}
+      -Patente del vehículo: ${this.fk_patente}
+    `;
+  
     const alert = await this.alertController.create({
       header: 'Exito',
-      message: 'Viaje publicado',
+      message: mensaje,
       buttons: [
         {
           text: 'OK',
           role: 'ok',
           cssClass: 'primary',
           handler: (blah) => {
+            // Puedes agregar lógica adicional si es necesario
           }
         }
       ]
     });
-
+  
     await alert.present();
   }
+  
 
 
 }

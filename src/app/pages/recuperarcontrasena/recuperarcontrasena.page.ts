@@ -25,9 +25,6 @@ export class RecuperarcontrasenaPage implements OnInit {
     if (!this.correo) {
       this.mensajes.push('Campo \'Correo\' es obligatorio');
       return;
-    } else if (!this.selectedSecurityQuestion) {
-      this.mensajes.push('Debes seleccionar una pregunta de seguridad');
-      return;
     } else if (!this.respuesta) {
       this.mensajes.push('Campo \'Respuesta\' es obligatorio');
       return;
